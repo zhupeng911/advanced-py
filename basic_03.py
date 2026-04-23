@@ -1,116 +1,105 @@
-# 案例1: 简单计算器模块
-# 涉及语法: 函数定义、条件语句、异常处理
+# 函数
+# 涉及语法: 位置参数、关键字参数、*args、**kwargs、高阶函数、lambda、map、filter、reduce、闭包、递归
+# ---------- 1. 函数参数 ----------
+from functools import reduce
+
+
+def func_params(a, b, c=10, *args, d=20, e=30, **kwargs):
+    """
+        *args 元组 多余位置参数：args 后面的参数必须用关键字参数传值（即使有默认值也要 d=40）
+        **kwargs 字典 多余关键字参数
+    """
+    print(f'a={a}, b={b}, c={c}')
+    print(f'args={args}')  # 元组
+    print(f'd={d}, e={e}')
+    print(f'kwargs={kwargs}')  # 字典
+
+
+def func_only_kwargs(a, *, b, c):
+    """* 后只能传字典多余关键字参数"""
+    print(f'a={a}, b={b}, c={c}')
+
+
+# ---------- 2. 高阶函数 ----------
+def add(x, y):
+    return x + y
+
+
+def multiply(x, y):
+    return x * y
+
+
+def apply_operation(func, x, y):
+    """函数作为参数"""
+    return func(x, y)
+
+
+# ---------- 3. lambda 表达式 ----------
+square = lambda x: x ** 2
+add_three = lambda x, y, z: x + y + z
+
+
+# ---------- 4. map、filter、reduce ----------
+def map_filter_reduce(numbers):
+    squared = list(map(lambda x: x ** 2, numbers))  # map: 转换每个元素
+    even = list(filter(lambda x: x % 2 == 0, numbers))  # filter: 过滤
+    total = reduce(lambda x, y: x + y, numbers, 0)  # 初始值 0
+    product = reduce(lambda x, y: x * y, numbers, 1)
+    return squared, even, total, product
+
+
+# ---------- 5. 列表/字典/集合推导式 ----------
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+squares_dict = {x: x ** 2 for x in range(5)}
+even_set = {x for x in numbers if x % 2 == 0}
+matrix = [[i * j for j in range(3)] for i in range(3)]
+
+
+# ---------- 6. 闭包 ----------
+# 定义：内部函数引用外部函数的变量，外部函数返回内部函数
+# 三要素：1. 外层函数定义变量 2. 内层函数引用外层变量 3. 外层函数返回内层函数
+
+def outer(x):  # 外部函数
+    def inner(y):  # 内部函数
+        return x + y  # 引用了外部函数的变量 x
+
+    return inner  # 返回内部函数
+
+
+closure = outer(10)
+print(closure(5))  # 15，x=10 被保留
+print(closure(3))  # 13，x=10 依然有效
+
+# ---------- 7. 装饰器 ----------
+# 定义：装饰器是包装函数的语法糖，在不修改原函数的情况下增强功能
 import functools
 import time
 
 
-def calculate(num1, num2, op):
-    try:
-        if op == '+':
-            return num1 + num2
-        elif op == '-':
-            return num1 - num2
-        elif op == '*':
-            return num1 * num2
-        elif op == '/':
-            if num2 == 0:
-                raise ValueError('Cannot divide by 0')  # 抛出内置的异常
-            return num1 / num2
-        else:
-            raise ValueError('Invalid operation')
-    except Exception as e:
-        print(e)
-        return None
-
-
-# 案例2: 文件读写与数据处理 todo
-# 涉及语法:文件操作、列表推导式、上下文管理器
-def read_and_process_file(filename):
-    try:
-        with open(filename, 'r', encoding='utf-8') as file:
-            lines = [line.strip() for line in file if line.strip()]
-            numbers = [int(line) for line in lines if line.isdigit()]
-            return numbers
-    except FileNotFoundError:
-        print(f"文件 {filename} 不存在")
-        return []
-
-
-def write_result(filename, data):
-    """写入处理结果"""
-    with open(filename, 'w', encoding='utf-8') as file:
-        for item in data:
-            file.write(f"{item}\n")
-
-
-# 案例3: 面向对象编程 - 银行账户系统
-# 涉及语法: 类定义、继承、封装、多态
-class Account:
-    def __init__(self, account_number, balance):
-        self._account_number = account_number  # 受保护的属性，本类以及子类可见
-        self.__balance = balance  # 私有属性，仅本类可见
-
-    def get_balance(self):
-        return self.__balance
-
-    # 账户存钱
-    def deposit(self, amount):
-        if amount > 0:
-            self.__balance += amount
-            return True
-        else:
-            return False
-
-    # 账户取钱
-    def withdraw(self, amount):
-        if self.__balance >= amount:
-            self.__balance -= amount
-            return True
-        else:
-            return False
-
-
-# 子类，新增字段rate
-class SavingAccount(Account):
-    def __init__(self, account_number, balance, rate):
-        super().__init__(account_number, balance)
-        self.__rate = rate
-
-    # 计算利息
-    def add_interest(self):
-        # interest = self.__rate * self.__balance 私有属性__balance子类无法直接访问
-        interest = self.__rate * self.get_balance()
-        self.deposit(interest)
-        return interest
-
-
-# 案例4: 装饰器应用 - 性能监控
-# 涉及语法:装饰器、闭包、functools
-# 计算函数执行耗时
 def timer(func):
-    @functools.wraps(func)  # 通过闭包实现装饰器时, 解决元数据丢失问题
-    def wrapper(*args, **kwargs):
-        start_time = time.time()
+    """计时装饰器"""
+
+    @functools.wraps(func)  # 1. 装饰器函数
+    def wrapper(*args, **kwargs):  # 2. 包装函数
+        start = time.time()
         result = func(*args, **kwargs)
-        end_time = time.time()
-        print(f"{func.__name__} 执行时间: {end_time - start_time:.4f}秒")
+        print(f"{func.__name__} 耗时: {time.time() - start:.4f}s")
         return result
 
     return wrapper
 
 
-# 接口重试
-def retry(max_attempts=3, delay=1):
+def retry(max_attempts=3):
+    """重试装饰器"""
+
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            for attempt in range(max_attempts):
+            for _ in range(max_attempts):
                 try:
                     return func(*args, **kwargs)
                 except Exception as e:
-                    if attempt == max_attempts - 1:
-                        raise e
-                    time.sleep(delay)
+                    print(f"重试中... {e}")
             return None
 
         return wrapper
@@ -118,54 +107,92 @@ def retry(max_attempts=3, delay=1):
     return decorator
 
 
-@retry(max_attempts=3, delay=1)
-@timer
-def testTimer():
-    print("testTimer")
+@timer  # 3. 语法糖
+def slow_function():
+    time.sleep(0.1)
+    return "done"
 
 
-# 案例5: 生成器与迭代器
-# 涉及语法:生成器函数、yield、迭代器协议
-def fibonacci_generator(n):
-    """斐波那契数列生成器"""
-    a, b = 0, 1
-    for i in range(n):
-        yield a
-        a, b = b, a + b
+# ---------- 8. 匿名函数与闭包结合 ----------
+def make_power_func(exp):
+    return lambda x: x ** exp
 
 
-def file_line_generator(filename):
-    """文件行生成器"""
-    with open(filename, 'r', encoding='utf-8') as file:
-        for line in file:
-            yield line.strip()
+square_func = make_power_func(2)
+cube_func = make_power_func(3)
 
 
+# ---------- 9. 函数式组合 ----------
+def compose(f, g):
+    """函数组合: compose(f, g)(x) = f(g(x))"""
+    return lambda x: f(g(x))
 
 
+import math
 
+sqrt_of_abs = compose(math.sqrt, abs)
+print(sqrt_of_abs(-16))  # 4.0
+
+# ---------- 10. 偏函数 ----------
+from functools import partial
+
+
+def power(base, exp):
+    return base ** exp
+
+
+# square = partial(power, exp=2)
+cube = partial(power, exp=3)
 
 if __name__ == '__main__':
-    # 案例1
-    print(calculate(10, 20, '+'))
-    print(calculate(10, 20, '-'))
-    print(calculate(10, 20, '+'))
-    print(calculate(10, 0, '/'))
+    # ---------- 1. 函数参数 ----------
+    print("=== 1. 函数参数 ===")
+    func_params(1, 2, 3, 4, 5, d=40, e=50, name='Alice')
+    func_params(1, 2, 3, 4, 5, 40, 50, name='Alice')
+    func_only_kwargs(1, b=2, c=3)
+    dict1 = {'b': 2, 'c': 3}
+    func_only_kwargs(1, **dict1)
 
-    # 案例3
-    account1 = Account("zhupeng", 100)
-    account1.deposit(10)
-    print(account1.get_balance())
-    account1.withdraw(10)
-    print(account1.get_balance())
+    # ---------- 2. 高阶函数 ----------
+    print("\n=== 2. 高阶函数 ===")
+    print(apply_operation(add, 3, 4))  # 7
+    print(apply_operation(multiply, 3, 4))  # 12
 
-    account2 = SavingAccount("zhupeng", 100, 0.1)
-    print(account2.get_balance())
-    account2.add_interest()
-    print(account2.get_balance())
+    # ---------- 3. lambda ----------
+    print("\n=== 3. lambda ===")
+    print(square(5))  # 25
+    print(add_three(1, 2, 3))  # 6
 
-    # 案例4
-    testTimer()
+    # ---------- 4. map、filter、reduce ----------
+    print("\n=== 4. map、filter、reduce ===")
+    numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    res = map_filter_reduce(numbers)
+    print(f"squared={res[0]}, even={res[1]}, total={res[2]}, product={res[3]}")
 
-    # 案例5
-    print(fibonacci_generator(10))
+    # ---------- 5. 推导式 ----------
+    print("\n=== 5. 推导式 ===")
+    print(f'squares_dict={squares_dict}')
+    print(f'even_set={even_set}')
+    print(f'matrix={matrix}')
+
+    # ---------- 6. 闭包 ----------
+    print("\n=== 6. 闭包 ===")
+    print(closure(5))
+
+    # ---------- 7. 装饰器 ----------
+    print("\n=== 7. 装饰器 ===")
+    slow_function()
+
+    # ---------- 8. lambda + 闭包 ----------
+    print("\n=== 10. lambda + 闭包 ===")
+    print(square_func(4))  # 16
+    print(cube_func(3))  # 27
+
+    # ---------- 9. 函数组合 ----------
+    print("\n=== 11. 函数组合 ===")
+    print(sqrt_of_abs(-16))
+
+    # ---------- 10. 偏函数 ----------
+    print("\n=== 12. 偏函数 ===")
+    print(square(5))  # 25
+    print(cube(3))  # 27

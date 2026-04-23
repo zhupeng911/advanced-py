@@ -1,5 +1,47 @@
-if __name__ == '__main__':
-    # 1.列表相关[java中list]
+# 输出 + 四大容器 + 控制语句
+# 列表List: 有序、可变（可以增删改）、允许重复
+#    students = ['alice', 'bob', 'red', 'cat']
+#
+# 元组Tuple: 不可变的列表,有序、不可变、允许重复
+#     names = ("Alice", "Bob")
+#
+# 集合Set：去重神器,无序、可变、不允许重复
+#     tags = {"python", "java", "python", "c++"}
+#
+# 字典Dictionary：键值对,键（Key）必须唯一且不可变，值（Value）可以任意
+#     user = {"name": "Gemini", "age": 1, "city": "Mountain View"}
+
+def basic_print():
+    name = 'Alice'
+    age = 23
+    score = 95.51
+
+    # 1. 直接拼接打印多个值（逗号分隔）
+    print('name:', name, ' age:', age, ' score:', score)
+
+    # 2. f-string（格式化字符串字面量）是 Python 3.6+ 的字符串格式化方式。
+    print(f'name: {name}, age: {age}, score: {score}')
+    print(f'name: {name}, age: {age}, score: {score:.1f}')
+    print(f'{age}岁' if age >= 18 else '未成年')
+
+    # 3. format() 方法
+    print('name: {}, age: {}, score: {}'.format(name, age, score))
+
+    # 4. 格式化整数和浮点数
+    num = 1230991
+    print(f'{num:,}')  # 千分位
+    print(f'{score:.2%}')  # 百分比
+    print(f'{age:#x}')  # 十六进制
+
+    # 6. print 不换行, 末尾指定符号
+    print('不换行', end=',')
+    print('不换行', end='')
+    print()
+
+
+# 2. 四大容器
+def basic_container():
+    # 1.列表List，有序、可变（可以增删改）、允许重复
     students = ['alice', 'bob', 'red', 'cat']
     print(students)
     print(students[0:2])  # ['alice', 'bob']
@@ -31,7 +73,15 @@ if __name__ == '__main__':
     students.reverse()  # 反向列表中元素
     students.sort(key=None, reverse=True)  # 对原列表进行排序
 
-    # 2.集合相关[java中set]
+    # 2.元组Tuple，不可变的列表、有序、允许重复
+    tuple1 = (1, 2, 3, 4, 5)
+    print(tuple1)
+    print(tuple1[0:2])
+    print(tuple1[1:3])
+    print(tuple1[2:4])
+    print(tuple1[:2])
+
+    # 3.集合Set，去重神器,无序、可变、不允许重复
     set1 = {1, 2, 3, 3, 4}  # 不可重复
     set1.add(8)
     set1.update({4, 99})
@@ -52,7 +102,7 @@ if __name__ == '__main__':
     print(set2 & set3)  # 集合a和b中都包含了的元素
     print(set2 ^ set3)  # 不同时包含于a和b的元素
 
-    # 3.字典相关[java中map]
+    # 4.字典map：键值对,键（Key）必须唯一且不可变，值（Value）可以任意
     stuInfo = {"name": "zhangsan", "age": 23}
     print(stuInfo)
     print(stuInfo["name"])
@@ -68,7 +118,17 @@ if __name__ == '__main__':
 
     del stuInfo
 
-    # 4.if相关
+    # 5.类型转换
+    str = '123123'
+    list_str = list(str)
+    set_str = set(str)
+    print(list_str)
+    print(set_str)
+
+
+# 3.基本逻辑控制语句
+def basic_logic_control():
+    # if相关
     num = int(input("input a number: "))
     if num % 2 == 0:
         if num % 3 == 0:
@@ -92,7 +152,7 @@ if __name__ == '__main__':
         human = 22 + (age - 2) * 5
         print("对应人类年龄: ", human)
 
-    # 5.循环
+    # 循环
     count = 1
     sum = 0
     while count <= 100:
@@ -118,3 +178,9 @@ if __name__ == '__main__':
 
     # pass 语句:pass 语句不执行任何操作
     # match语句
+
+
+if __name__ == '__main__':
+    basic_print()
+    basic_container()
+    basic_logic_control()
