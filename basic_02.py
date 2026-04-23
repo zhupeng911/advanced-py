@@ -21,6 +21,7 @@ class Student:
         Student._count += 1
 
     # ---------- 2.property 装饰器 ----------
+    # ---------- 让你像访问属性一样调用方法，同时保留对读写的控制权
     # 类似于java的set get
     @property
     def name(self):
