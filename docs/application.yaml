@@ -1,12 +1,12 @@
-name: 李四
-age: 30
+spring:
+  profiles:
+    active: false
+  redis:
+    host: 127.0.0.1
+    port: 6379
 skills:
 - Python
 - Docker
 - Kubernetes
-is_active: true
-address:
-  city: 上海
-  district: 浦东新区
 updated: true
 score: 88.5
