@@ -1,28 +1,10 @@
 # 异常处理 - 常见技术点
-import os
 import json
-import math
+import os
 import random
-import traceback
 import sys
+import traceback
 from contextlib import suppress
-
-
-# ============================================================
-# 技术点速查表
-# ============================================================
-#  1. try / except / else / finally     — 完整结构
-#  2. 捕获多个异常类型                  — 元组 / 分支
-#  3. 异常链 raise ... from ...         — 保留 / 抑制原始异常
-#  4. 自定义异常                        — 继承层级 + 附加字段
-#  5. finally 与 return                — finally 中 return 覆盖返回值（反模式）
-#  6. contextlib.suppress               — 静默忽略指定异常
-#  7. assert 断言                       — 开发期调试，生产可用 -O 禁用
-#  8. traceback / sys.exc_info          — 获取完整异常堆栈
-#  9. 重试模式                          — 捕获异常循环重试
-# 10. 最佳实践                          — 避免裸 except / 避免吞异常
-# 11. ValueError / TypeError           — 常见内建异常详解
-# ============================================================
 
 
 # ============================================================
@@ -53,13 +35,12 @@ def catch_multiple_types():
     for err in errors:
         try:
             if err == ZeroDivisionError:
-                1 / 0
+                print("除零错误 1/0")
             elif err == ValueError:
-                int("abc")
+                print("值错误 int('abc')")
             elif err == TypeError:
-                "2" + 2
-        except (ZeroDivisionError, ValueError) as e:
-            # 用元组捕获多种异常，共享同一处理逻辑
+                print("类型错误 '2' + 2")
+        except (ZeroDivisionError, ValueError) as e:  # 用元组捕获多种异常，共享同一处理逻辑
             print(f"[2] 数据错误 ({type(e).__name__}): {e}")
         except TypeError as e:
             print(f"[2] 类型错误 ({type(e).__name__}): {e}")
@@ -131,35 +112,11 @@ def custom_exception():
         # 用基类 AppError 统一捕获所有子类异常
         print(f"[4] 应用错误 ({type(e).__name__}): {e}")
 
+# 运行方法
+custom_exception()
 
 # ============================================================
-# 5. finally 与 return 的交互
-# ============================================================
-def finally_and_return():
-    """finally 在 return 之前执行，且可以覆盖返回值"""
-    def func_a():
-        try:
-            return 1
-        finally:
-            print("[5a] finally 执行了（try 中有 return）")
-
-    print(f"[5a] 返回值: {func_a()}")  # 1
-
-    def func_b():
-        result = 1
-        try:
-            return result
-        finally:
-            print("[5b] finally 覆盖了返回值（result 原本是 1，finally 执行后才返回）")
-            # ⚠️ finally 中如果再赋值/return，会覆盖 try 中的值
-            # 建议: 避免在 finally 中写 return，这是反模式
-
-    func_b()  # 不会打印，因为 return 覆盖了 print 的执行时机
-    print("[5b] 注意: finally 覆盖返回值是危险反模式，勿在实际代码中使用")
-
-
-# ============================================================
-# 6. 上下文管理器与异常: suppress
+# 5. 上下文管理器与异常: suppress
 # ============================================================
 def contextlib_suppress():
     """contextlib.suppress: 静默忽略指定异常（替代 try/except pass）"""
@@ -178,10 +135,11 @@ def contextlib_suppress():
 
 
 # ============================================================
-# 7. assert 断言
+# 6. assert 断言
 # ============================================================
 def assertion():
     """assert 用于开发期调试检查，生产环境可用 -O 禁用"""
+
     def calculate_average(numbers):
         assert len(numbers) > 0, "列表不能为空"  # 条件为 False 时抛 AssertionError
         return sum(numbers) / len(numbers)
@@ -198,7 +156,7 @@ def assertion():
 
 
 # ============================================================
-# 8. 获取异常详细信息: traceback / sys.exc_info
+# 7. 获取异常详细信息: traceback / sys.exc_info
 # ============================================================
 def exception_details():
     """获取完整的异常追踪信息"""
@@ -219,10 +177,11 @@ def exception_details():
 
 
 # ============================================================
-# 9. 异常中的循环重试模式
+# 8. 异常中的循环重试模式
 # ============================================================
 def retry_pattern():
     """常见重试模式: 捕获异常后重试，最多 N 次"""
+
     def unstable_operation():
         """模拟不稳定操作（70% 概率失败）"""
         if random.random() < 0.7:
@@ -243,7 +202,7 @@ def retry_pattern():
 
 
 # ============================================================
-# 10. 万能异常捕获的最佳实践
+# 9. 万能异常捕获的最佳实践
 # ============================================================
 def best_practices():
     """异常处理的常见最佳实践"""
@@ -273,26 +232,3 @@ def best_practices():
     # 正确: 至少记录日志
     # except Exception as e:
     #     logging.exception("操作失败")
-
-
-if __name__ == '__main__':
-    basic_structure()
-    print()
-    catch_multiple_types()
-    print()
-    exception_chaining()
-    print()
-    custom_exception()
-    print()
-    finally_and_return()
-    print()
-    contextlib_suppress()
-    print()
-    assertion()
-    print()
-    exception_details()
-    print()
-    retry_pattern()
-    print()
-    best_practices()
-    print()

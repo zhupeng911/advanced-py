@@ -1,4 +1,4 @@
-# 输出 + 四大容器 + 控制语句
+# 技术点：四大容器
 # 列表List: 有序、可变（可以增删改）、允许重复
 #    students = ['alice', 'bob', 'red', 'cat']
 #
@@ -11,90 +11,96 @@
 # 字典Dictionary：键值对,键（Key）必须唯一且不可变，值（Value）可以任意
 #     user = {"name": "Gemini", "age": 1, "city": "Mountain View"}
 
-def basic_print():
-    name = 'Alice'
-    age = 23
-    score = 95.51
-
-    # 1. 直接拼接打印多个值（逗号分隔）
-    print('name:', name, ' age:', age, ' score:', score)
-
-    # 2. f-string（格式化字符串字面量）是 Python 3.6+ 的字符串格式化方式。
-    print(f'name: {name}, age: {age}, score: {score}')
-    print(f'name: {name}, age: {age}, score: {score:.1f}')
-    print(f'{age}岁' if age >= 18 else '未成年')
-
-    # 3. format() 方法
-    print('name: {}, age: {}, score: {}'.format(name, age, score))
-
-    # 4. 格式化整数和浮点数
-    num = 1230991
-    print(f'{num:,}')  # 千分位
-    print(f'{score:.2%}')  # 百分比
-    print(f'{age:#x}')  # 十六进制
-
-    # 6. print 不换行, 末尾指定符号
-    print('不换行', end=',')
-    print('不换行', end='')
-    print()
-
-
-# 2. 四大容器
 def basic_container():
     # 1.列表List，有序、可变（可以增删改）、允许重复
     students = ['alice', 'bob', 'red', 'cat']
+
+    # 增
+    students.append('alice')
+    students.insert(5, 'alice')
+    # 删
+    del students[0]
+    students.remove('bob')
+    # 改
+    students[0] = 'alice22'
+    # 查
     print(students)
-    print(students[0:2])  # ['alice', 'bob']
-    print(students[1:2])  # ['bob']
+    print(students[1:2])  # 使用切片获取子列表
+    print(students[:2])  # 返回前两个元素
+    print(students[1:])  # 返回从第二个元素开始到末尾的所有元素
+    print(students[:])  # 返回所有元素
     print(students[0])
-    print(students[1])
-    print(students[2])
+    print(students[-1])  # 返回最后一个元素
+    print(len(students))  # 返回列表长度
+    print('alice' in students)
+    print('alice' not in students)
+    print(students.count('alice'))  # 出现次数
+    print(students.index('alice'))  # 首次出现下标,如果没有会报错
 
+    # 遍历
     for stu in students:
-        print(stu, len(stu))
-
+        print(stu)
     for i in range(len(students)):
         print(students[i])
 
-    # 常用方法
-    students.append('cook')  # 在列表末尾添加新的对象
-    students.insert(5, 'alice')  # 将对象插入列表指定下班
-    students.remove('bob')  # 移除列表中某个值的第一个匹配项
-    print(students.count('alice'))  # 出现次数
-    print(students.index('alice'))  # 首次出现下标,如果没有会报错
-    print('jack' in students)
+    # 拼接
+    teachers = ['alice', 'bob', 'red', 'cat']
+    all = students + teachers
+    print(all)
 
+    # zip,在多个列表中循环
+    for stu, tea in zip(students, teachers):
+        print(stu)
+        print(tea)
+
+    # 排序
     scores = [100, 78, 78, 67, 90]
+    scores.sort()
+    print(scores)
     print(len(scores))
     print(max(scores))
     print(min(scores))
     print(sum(scores))
-
-    students.reverse()  # 反向列表中元素
-    students.sort(key=None, reverse=True)  # 对原列表进行排序
+    scores.reverse()  # 反向列表中元素
+    scores.sort(key=None, reverse=True)  # 对原列表进行排序
 
     # 2.元组Tuple，不可变的列表、有序、允许重复
     tuple1 = (1, 2, 3, 4, 5)
+    # 不支持增、删、改
+    # 查
     print(tuple1)
     print(tuple1[0:2])
     print(tuple1[1:3])
     print(tuple1[2:4])
     print(tuple1[:2])
 
+    # 类型转换
+    names = ['alice', 'bob', 'red', 'cat']
+    tuple2 = tuple(names)
+    print(tuple2)
+    list2 = list(tuple2)
+    print(list2)
+
     # 3.集合Set，去重神器,无序、可变、不允许重复
-    set1 = {1, 2, 3, 3, 4}  # 不可重复
-    set1.add(8)
-    set1.update({4, 99})
-    set1.remove(1)
-    set1.discard(2)
+    set1 = {1, 2, 3, 3, 4, 1}  # 使用花括号
+    # 增
+    set1.add(6)
+    # 删
+    set1.remove(1)  # 如果值不存在，remove() 会引发 key error。
+    set1.discard(2)  # 移除元素(安全，缺失时不报错)
+    # 改
+    set1.update({4, 5})
+    set1.update([4, 5])
+    # 查
     print(set1)
     print(len(set1))
     print(set1.pop())
     print(1 in set1)
-
+    # 遍历
     for item in set1:
         print(item)
 
+    # 集合运算
     set2 = set("abcde")
     set3 = set("defgh")
     print(set2 - set3)  # 集合a中包含而集合b中不包含的元素
@@ -103,22 +109,36 @@ def basic_container():
     print(set2 ^ set3)  # 不同时包含于a和b的元素
 
     # 4.字典map：键值对,键（Key）必须唯一且不可变，值（Value）可以任意
-    stuInfo = {"name": "zhangsan", "age": 23}
+    stuInfo = {
+        "name": "zhangsan",
+        "age": 23
+    }
+    # 增
+    stuInfo.setdefault("city", "上海")
+    # 删
+    del stuInfo["name"]
+    stuInfo.pop("name")
+    # del stuInfo
+    # 改
+    stuInfo["age"] = 24
+    # 查
     print(stuInfo)
     print(stuInfo["name"])
-    print(stuInfo["age"])
     print(len(stuInfo))
-    print(stuInfo.pop("name"))
+    print(stuInfo.keys())
+    print(stuInfo.values())
+    print(stuInfo.items())
+    print("name" in stuInfo.keys())  # 判断键是否存在'
+    print("zhupeng" in stuInfo.values())  # 判断值是否存在
 
+    # 遍历
     for key in stuInfo.keys():
         print(key, stuInfo[key])
 
     for key, value in stuInfo.items():
         print(key, value)
 
-    del stuInfo
-
-    # 5.类型转换
+    # 类型转换
     str = '123123'
     list_str = list(str)
     set_str = set(str)
@@ -179,6 +199,7 @@ def basic_logic_control():
     # pass 语句:pass 语句不执行任何操作
     # match语句
 
+
 from datetime import datetime, timedelta, date
 
 
@@ -221,7 +242,6 @@ def basic_date_format():
 
 
 if __name__ == '__main__':
-    basic_print()
     basic_container()
     basic_logic_control()
     basic_date_format()
