@@ -15,7 +15,7 @@ import yaml
 # 1.文件夹与文件
 def demo_file():
     # 文件夹
-    folder = Path("../docs")
+    folder = Path("docs")
     print(f'当前工作目录绝对路径: {Path.cwd()}')
     print(f"文件夹相对路径: {folder}")
     print(f"文件夹绝对路径: {folder.resolve()}")
@@ -57,7 +57,7 @@ def demo_file():
     # 4. 复制文件夹（目标已存在会报错，可用 shutil.copytree + dirs_exist_ok=True 覆盖）
     # copied_folder = shutil.copytree("docs", "docs_bk")
     # print(f"复制文件夹: {copied_folder}")
-    copied_folder = shutil.copytree("../docs", "docs_bk", dirs_exist_ok=True)
+    copied_folder = shutil.copytree("docs", "docs_bk", dirs_exist_ok=True)
 
     # 5. 移动文件夹
     # shutil.move("源路径", "目标路径")
@@ -107,7 +107,7 @@ def demo_file():
 # 2. JSON 文件操作
 def demo_json():
     # 1. 读取 JSON 文件
-    coder_json_path = Path("../docs/Coder.json")
+    coder_json_path = Path("docs/Coder.json")
     with open(coder_json_path, "r", encoding="utf-8") as f:
         data = json.load(f)
     print(f"读取 JSON: {data}")
@@ -141,7 +141,7 @@ def demo_json():
         "is_active": True,
         "address": {"city": "北京", "district": "朝阳区"}
     }
-    with open(Path("../docs/student.json"), "w", encoding="utf-8") as f:
+    with open(Path("docs/student.json"), "w", encoding="utf-8") as f:
         json.dump(stu_info, f, ensure_ascii=False, indent=4)
 
     # 4. Student -> JSON
@@ -219,7 +219,7 @@ class Student:
 
 # 3. YAML 文件操作
 def demo_yaml():
-    yaml_path = Path("../docs/application.yaml")
+    yaml_path = Path("docs/application.yaml")
 
     # 1. 读取 YAML 文件
     with open(yaml_path, "r", encoding="utf-8") as f:
@@ -330,7 +330,7 @@ import csv
 
 
 def demo_csv():
-    csv_file = Path("../docs/teachers.csv")
+    csv_file = Path("docs/teachers.csv")
 
     # 1. 写入 CSV 文件
     teachers = [
@@ -369,7 +369,7 @@ def demo_csv():
             print(row)
 
     # 6. 写入字典形式的 CSV
-    dict_csv_file = Path("../docs/teachers_dict.csv")
+    dict_csv_file = Path("docs/teachers_dict.csv")
     teachers_dict = [
         {"name": "张三", "age": 25, "city": "北京"},
         {"name": "李四", "age": 30, "city": "上海"},
