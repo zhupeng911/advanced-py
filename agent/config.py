@@ -1,4 +1,8 @@
 import os
+import warnings
+
+# 全局抑制 Pydantic V1 兼容性警告（Python 3.14+）
+warnings.filterwarnings("ignore", message="Core Pydantic V1 functionality", category=UserWarning)
 
 from dotenv import load_dotenv
 
