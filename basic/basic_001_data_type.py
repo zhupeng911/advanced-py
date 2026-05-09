@@ -66,7 +66,7 @@ print("Hello" in spam)
 print("world" not in spam)
 print(spam.upper())
 print(spam.lower())
-print(spam.title())
+print(spam.title()) # 将字符串中每个单词的首字母大写，其余字母小写
 
 print(spam.isalpha())  # 如果字符串仅由字母组成，则返回 True
 print(spam.isalnum())  # 如果字符串仅由字母和数字组成，则返回 True

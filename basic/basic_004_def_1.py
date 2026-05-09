@@ -1,5 +1,4 @@
-# 函数
-# 涉及语法: 位置参数、关键字参数、*args、**kwargs、高阶函数、lambda、map、filter、reduce、闭包、递归
+# 函数基础: 位置参数、关键字参数、*args、**kwargs、高阶函数、lambda
 # ---------- 1. 函数参数 ----------
 def say_hello(name, age):
     print(f'Hello:{name} age: {age}')
@@ -101,100 +100,15 @@ def is_positive(x):
 judge = lambda x: is_positive(x)
 print(judge(5))
 
+# 应用1: 排序自定义key
+students = [{'name': 'Alice', 'age': 25}, {'name': 'Bob', 'age': 20}]
+sorted(students, key=lambda x: x['age'])  # 按age排序，升序
+sorted(students, key=lambda x: x['age'], reverse=True)  # 按age排序，降序
 
+# 应用2：map批量处理
+nums = [1, 2, 3, 4]
+list(map(lambda x: x ** 2, nums))  # [1, 4, 9, 16]
 
-
-
-
-
-
-
-
-# # ---------- 6. 闭包 ----------
-# # 定义：内部函数引用外部函数的变量，外部函数返回内部函数
-# # 三要素：1. 外层函数定义变量 2. 内层函数引用外层变量 3. 外层函数返回内层函数
-#
-# def outer(x):  # 外部函数
-#     def inner(y):  # 内部函数
-#         return x + y  # 引用了外部函数的变量 x
-#
-#     return inner  # 返回内部函数
-#
-#
-# closure = outer(10)
-# print(closure(5))  # 15，x=10 被保留
-# print(closure(3))  # 13，x=10 依然有效
-#
-# # ---------- 7. 装饰器 ----------
-# # 定义：装饰器是包装函数的语法糖，在不修改原函数的情况下增强功能
-# import functools
-# import time
-#
-#
-# def timer(func):
-#     """计时装饰器"""
-#
-#     @functools.wraps(func)  # 1. 装饰器函数
-#     def wrapper(*args, **kwargs):  # 2. 包装函数
-#         start = time.time()
-#         result = func(*args, **kwargs)
-#         print(f"{func.__name__} 耗时: {time.time() - start:.4f}s")
-#         return result
-#
-#     return wrapper
-#
-#
-# def retry(max_attempts=3):
-#     """重试装饰器"""
-#
-#     def decorator(func):
-#         @functools.wraps(func)
-#         def wrapper(*args, **kwargs):
-#             for _ in range(max_attempts):
-#                 try:
-#                     return func(*args, **kwargs)
-#                 except Exception as e:
-#                     print(f"重试中... {e}")
-#             return None
-#
-#         return wrapper
-#
-#     return decorator
-#
-#
-# @timer  # 3. 语法糖
-# def slow_function():
-#     time.sleep(0.1)
-#     return "done"
-#
-#
-# # ---------- 8. 匿名函数与闭包结合 ----------
-# def make_power_func(exp):
-#     return lambda x: x ** exp
-#
-#
-# square_func = make_power_func(2)
-# cube_func = make_power_func(3)
-#
-#
-# # ---------- 9. 函数式组合 ----------
-# def compose(f, g):
-#     """函数组合: compose(f, g)(x) = f(g(x))"""
-#     return lambda x: f(g(x))
-#
-#
-# import math
-#
-# sqrt_of_abs = compose(math.sqrt, abs)
-# print(sqrt_of_abs(-16))  # 4.0
-#
-# # ---------- 10. 偏函数 ----------
-# from functools import partial
-#
-#
-# def power(base, exp):
-#     return base ** exp
-#
-#
-# # square = partial(power, exp=2)
-# cube = partial(power, exp=3)
+# 应用3：filter过滤
+nums = [1, 2, 3, 4, 5, 6]
+list(filter(lambda x: x % 2 == 0, nums))  # [2, 4, 6]

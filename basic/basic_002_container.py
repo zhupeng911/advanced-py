@@ -44,14 +44,29 @@ def basic_container():
         print(students[i])
 
     # 拼接
-    teachers = ['alice', 'bob', 'red', 'cat']
+    teachers = ['zhangsan', 'lisi', 'wangwu']
     all = students + teachers
     print(all)
 
     # zip,在多个列表中循环
+    # zip() 函数将多个列表打包成元组序列
+    # for stu, tea in zip(...) 会同时遍历两个列表
+    # 按顺序配对：alice-zhangsan，bob-lisi，red-wangwu，cat 被丢弃（列表长度不同）
     for stu, tea in zip(students, teachers):
-        print(stu)
-        print(tea)
+        print(stu, tea)
+
+    # 应用场景1:合并两个列表为字典
+    # {'name': 'Alice', 'age': 25, 'city': 'Beijing'}
+    keys = ['name', 'age', 'city']
+    values = ['Alice', 25, 'Beijing']
+    dict(zip(keys, values))
+
+    # 应用场景2：批量更新数据库
+    users = ['user1', 'user2', 'user3']
+    scores = [95, 88, 92]
+    for user, score in zip(users, scores):
+        print(user, score)
+        # db.execute("UPDATE scores SET v=? WHERE name=?", (score, user))
 
     # 排序
     scores = [100, 78, 78, 67, 90]
@@ -117,13 +132,13 @@ def basic_container():
     stuInfo.setdefault("city", "上海")
     # 删
     del stuInfo["name"]
-    stuInfo.pop("name")
+    # stuInfo.pop("name")
     # del stuInfo
     # 改
     stuInfo["age"] = 24
     # 查
     print(stuInfo)
-    print(stuInfo["name"])
+    # print(stuInfo["name"])
     print(len(stuInfo))
     print(stuInfo.keys())
     print(stuInfo.values())
@@ -144,60 +159,6 @@ def basic_container():
     set_str = set(str)
     print(list_str)
     print(set_str)
-
-
-# 3.基本逻辑控制语句
-def basic_logic_control():
-    # if相关
-    num = int(input("input a number: "))
-    if num % 2 == 0:
-        if num % 3 == 0:
-            print("你输入的数字可以整除 2 和 3")
-        else:
-            print("你输入的数字可以整除 2，但不能整除 3")
-    else:
-        if num % 3 == 0:
-            print("你输入的数字可以整除 3，但不能整除 2")
-        else:
-            print("你输入的数字不能整除 2 和 3")
-
-    age = int(input("请输入你家狗狗的年龄: "))
-    if age <= 0:
-        print("你是在逗我吧!")
-    elif age == 1:
-        print("相当于 14 岁的人。")
-    elif age == 2:
-        print("相当于 22 岁的人。")
-    elif age > 2:
-        human = 22 + (age - 2) * 5
-        print("对应人类年龄: ", human)
-
-    # 循环
-    count = 1
-    sum = 0
-    while count <= 100:
-        sum += count
-        count += 1
-    else:
-        print(count, "大于100，结束")
-    print(sum)
-
-    for n in range(2, 10):
-        for x in range(2, n):
-            if n % x == 0:
-                print(n, 'equals', x, '*', n // x)
-                break
-        else:  # 与if语句相比，循环的else子句更像try的else子句
-            print(n, 'is a prime number')
-
-    for x in range(5, 10):
-        if x % 2 == 0:
-            print("找到偶数: ", x)
-            continue
-        print(x)
-
-    # pass 语句:pass 语句不执行任何操作
-    # match语句
 
 
 from datetime import datetime, timedelta, date
@@ -243,5 +204,4 @@ def basic_date_format():
 
 if __name__ == '__main__':
     basic_container()
-    basic_logic_control()
     basic_date_format()
