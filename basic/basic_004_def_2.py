@@ -1,9 +1,12 @@
 # 函数：解包、闭包、装饰器
+import functools
+import time
+
 # ---------- 1. 解包 ----------
 # 解包（Unpacking）：就是把一个容器（列表、元组、字典等）拆开，把里面的元素单独取出来的过程
 # 基本解包：列表/元组
 a, b, c = [1, 2, 3]  # a=1, b=2, c=3
-e, f = (10, 20)  # a=10, b=20
+e, f = (10, 20)  # e=10, f=20
 # 基本解包：交换变量（无需临时变量）
 a, b = b, a
 
@@ -28,17 +31,12 @@ config = {**defaults, **options}
 name, age, (city, country) = ('Alice', 25,
                               ('Beijing', 'China'))  # name='Alice', age=25, city='Beijing', country='China'
 
-# 场景1: 遍历key-value
-d = {'a': 1, 'b': 2, 'c': 3}
-for k, v in d.items():
-    print(k, v)
-
-# 场景2:拉链操作（zip逆操作）
+# 场景2：拉链操作（zip逆操作）
 pairs = [('a', 1), ('b', 2), ('c', 3)]
 keys, values = zip(*pairs)  # keys=('a','b','c'), values=(1,2,3)
 
 
-# 场景3:展开函数参数
+# 场景3：展开函数参数
 # args = (1, 2, 3)
 # func(*args)
 # kwargs = {'name': 'Alice', 'age': 25}
@@ -61,9 +59,9 @@ print(closure(5))  # 15，x=10 被保留
 print(closure(3))  # 13，x=10 依然有效
 
 
-# 场景1. 函数工厂（避免重复计算）
+# 场景1：函数工厂（避免重复计算）
 def make_multiplier(n):
-    return lambda x: x * n
+    return lambda number: number * n
 
 
 double = make_multiplier(2)  # x*2
@@ -72,7 +70,7 @@ print(double(5))  # 10
 print(triple(5))  # 15
 
 
-# 场景2. 计数器
+# 场景2：计数器
 def counter():
     count = 0
 
@@ -90,53 +88,108 @@ print(c())  # 2
 print(c())  # 3
 
 
-# 场景3. 装饰器（本质就是闭包）
-def logger(func):
-    def wrapper(*args):
-        print(f'Calling {func.__name__}')
-        return func(*args)
-
-    return wrapper
-
-
 # ---------- 3. 装饰器 ----------
-# 定义：装饰器是包装函数的语法糖，在不修改原函数的情况下增强功能
-import functools
-import time
+# 定义：装饰器是包装函数的语法糖，在不修改原函数源码的情况下增强功能
+# 本质：装饰器也是闭包，外层函数接收原函数，内层函数负责增强并调用原函数
 
+def logger(func):
+    """日志装饰器：记录函数调用前后的信息"""
 
-def timer(func):
-    """计时装饰器"""
-
-    @functools.wraps(func)  # 1. 装饰器函数
-    def wrapper(*args, **kwargs):  # 2. 包装函数
-        start = time.time()
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print(f"调用函数: {func.__name__}")
+        print(f"位置参数: {args}, 关键字参数: {kwargs}")
         result = func(*args, **kwargs)
-        print(f"{func.__name__} 耗时: {time.time() - start:.4f}s")
+        print(f"返回结果: {result}")
         return result
 
     return wrapper
 
 
-def retry(max_attempts=3):
-    """重试装饰器"""
+def timer(func):
+    """计时装饰器：统计函数运行耗时"""
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        cost = time.perf_counter() - start
+        print(f"{func.__name__} 耗时: {cost:.4f}s")
+        return result
+
+    return wrapper
+
+
+def retry(max_attempts=3, delay=0, exceptions=(Exception,)):
+    """带参数装饰器：函数失败后自动重试
+
+    max_attempts：最多执行次数
+    delay：每次失败后的等待秒数
+    exceptions：只捕获并重试指定异常类型
+    """
+    if max_attempts < 1:
+        raise ValueError("max_attempts 必须大于等于 1")
 
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            for _ in range(max_attempts):
+            last_error = None
+            for attempt in range(1, max_attempts + 1):
                 try:
                     return func(*args, **kwargs)
-                except Exception as e:
-                    print(f"重试中... {e}")
-            return None
+                except exceptions as error:
+                    last_error = error
+                    if attempt == max_attempts:
+                        break
+                    print(f"第 {attempt} 次失败: {error}，准备重试...")
+                    if delay > 0:
+                        time.sleep(delay)
+            print(f"{func.__name__} 最终失败: {last_error}")
+            raise last_error
 
         return wrapper
 
     return decorator
 
 
-@timer  # 3. 语法糖
+@logger
+def greet(name, greeting="你好"):
+    """普通装饰器示例：支持位置参数和关键字参数"""
+    return f"{greeting}, {name}"
+
+
+@timer
 def slow_function():
+    """计时装饰器示例"""
     time.sleep(0.1)
     return "done"
+
+
+@retry(max_attempts=3, delay=0.1)
+def unstable_task():
+    """带参数装饰器示例：模拟前两次失败，第三次成功"""
+    unstable_task.calls += 1
+    if unstable_task.calls < 3:
+        raise ValueError("网络临时异常")
+    return "请求成功"
+
+
+unstable_task.calls = 0
+
+
+@timer
+@logger
+def add(a, b):
+    """多个装饰器叠加：执行顺序等价于 add = timer(logger(add))"""
+    return a + b
+
+
+if __name__ == '__main__':
+    print(greet("小明", greeting="早上好"))
+    print(slow_function())
+    print(unstable_task())
+    print(add(10, 20))
+
+    # functools.wraps 会保留原函数名称和文档字符串，方便调试和生成文档
+    print(greet.__name__)  # greet
+    print(greet.__doc__)  # 普通装饰器示例：支持位置参数和关键字参数
