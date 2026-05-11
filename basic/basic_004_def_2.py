@@ -1,6 +1,4 @@
-# 函数：解包、闭包、装饰器
-import functools
-import time
+# 函数：解包、闭包
 
 # ---------- 1. 解包 ----------
 # 解包（Unpacking）：就是把一个容器（列表、元组、字典等）拆开，把里面的元素单独取出来的过程
@@ -44,152 +42,91 @@ keys, values = zip(*pairs)  # keys=('a','b','c'), values=(1,2,3)
 
 
 # ---------- 2. 闭包 ----------
-# 定义：内部函数引用外部函数的变量，外部函数返回内部函数
-# 三要素：1. 外层函数定义变量 2. 内层函数引用外层变量 3. 外层函数返回内层函数
+# 定义：如果一个函数内部嵌套定义了另一个函数，并且内部函数引用了外部函数的局部变量或形参，那么这个内部函数以及用到的外部函数中的变量就被称为闭包
+# 三要素：1. 外部函数嵌套定义内部函数 2. 内层函数引用了外部函数的局部变量或形参 3. 外部函数返回了内层函数的引用
+def person(name):  # 外部函数
+    num = 100  # 局部变量
 
-def outer(x):  # 外部函数
-    def inner(y):  # 内部函数
-        return x + y  # 引用了外部函数的变量 x
+    def say(content):  # 内部函数
+        return name + " says " + content  # 引用了外部函数的变量name
 
-    return inner  # 返回内部函数
-
-
-closure = outer(10)  # outer返回inner，x=10被捕获
-print(closure(5))  # 15，x=10 被保留
-print(closure(3))  # 13，x=10 依然有效
+    return say  # 返回内部函数
 
 
-# 场景1：函数工厂（避免重复计算）
-def make_multiplier(n):
-    return lambda number: number * n
+alice = person('Alice')
+bob = person('Bob')
+alice('Hello')  # Alice says Hello
+bob('Hi')  # Bob says Hi
 
 
-double = make_multiplier(2)  # x*2
-triple = make_multiplier(3)  # x*3
-print(double(5))  # 10
-print(triple(5))  # 15
+# 案例1：
+def test(number):
+    def test_in(number_in):
+        return number + number_in
+
+    return test_in
 
 
-# 场景2：计数器
-def counter():
-    count = 0
-
-    def inc():
-        nonlocal count
-        count += 1
-        return count
-
-    return inc
+# 给test函数赋值，这个20就是给参数number
+ret = test(20)
+# 注意这里的100其实给参数number_in
+print(ret(100))
+# 注意这里的100其实给参数number_i
+print(ret(200))
 
 
-c = counter()
-print(c())  # 1
-print(c())  # 2
-print(c())  # 3
+# 说明：
+# 1.正常来说，调用一个函数的时候，这个函数中的所有局部变量+形参 都只会在这个函数执行的过程中才会保留，只要这个函数 执行完毕，那么这些局部变量+形參就会被自动释放。
+# 2. 闭包比普通函数强大的地方在于，它在外部函数执行完毕之后，这个外部函数中所有局部变量+形參，都不会被释放，以便于在 调用内部函数的时候
+# 可以使用
+#
+# 闭包的好处：可以将局部变量 永久存儲存储
+# 坏处：占用内存
+# 	如果调用了100次的闭包函数，那么意味着 创建了100个 闭包，占用了大量的无用内存
+# 	如果调用了100次的普通函数，那么意味着 调用100次函数时 申请了100次空间，然后又释放了100次空间，不会占用大量内存
 
 
-# ---------- 3. 装饰器 ----------
-# 定义：装饰器是包装函数的语法糖，在不修改原函数源码的情况下增强功能
-# 本质：装饰器也是闭包，外层函数接收原函数，内层函数负责增强并调用原函数
+# 案例2：nonlocal闭包中修改外部函数中变量的值
+def counter(start=0):
+    def add_one():
+        nonlocal start  # 添加nonlocal 可以让start在闭包中的内部函数进行修改，否则会产生异常
+        start += 1  # 在闭包中的 内部函数中，如果没有用特殊的关键字来 声明 外部函数中的变量，则不能对其进行修改
+        return start
 
-def logger(func):
-    """日志装饰器：记录函数调用前后的信息"""
-
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        print(f"调用函数: {func.__name__}")
-        print(f"位置参数: {args}, 关键字参数: {kwargs}")
-        result = func(*args, **kwargs)
-        print(f"返回结果: {result}")
-        return result
-
-    return wrapper
+    return add_one
 
 
-def timer(func):
-    """计时装饰器：统计函数运行耗时"""
+c1 = counter(5)  # 创建一个闭包
+print(c1())
+print(c1())
 
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        start = time.perf_counter()
-        result = func(*args, **kwargs)
-        cost = time.perf_counter() - start
-        print(f"{func.__name__} 耗时: {cost:.4f}s")
-        return result
+c2 = counter(50)  # 再创建一个闭包
+print(c2())
+print(c2())
 
-    return wrapper
-
-
-def retry(max_attempts=3, delay=0, exceptions=(Exception,)):
-    """带参数装饰器：函数失败后自动重试
-
-    max_attempts：最多执行次数
-    delay：每次失败后的等待秒数
-    exceptions：只捕获并重试指定异常类型
-    """
-    if max_attempts < 1:
-        raise ValueError("max_attempts 必须大于等于 1")
-
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            last_error = None
-            for attempt in range(1, max_attempts + 1):
-                try:
-                    return func(*args, **kwargs)
-                except exceptions as error:
-                    last_error = error
-                    if attempt == max_attempts:
-                        break
-                    print(f"第 {attempt} 次失败: {error}，准备重试...")
-                    if delay > 0:
-                        time.sleep(delay)
-            print(f"{func.__name__} 最终失败: {last_error}")
-            raise last_error
-
-        return wrapper
-
-    return decorator
+# 上面已经创建了2个闭包，下面的代码故意再次对C1/C2进行调用，检测 是否会因为 第二次创建闭包 导致第一次创建的闭包 失效，结果发现 没有任何影响
+# 说明了一个道理：可以创建多个闭包，多个闭包之间没有任何关系
+print(c1())
+print(c1())
+print(c2())
+print(c2())
 
 
-@logger
-def greet(name, greeting="你好"):
-    """普通装饰器示例：支持位置参数和关键字参数"""
-    return f"{greeting}, {name}"
+# 感觉闭包与对象有些类似，对象其实可通俗的理解为数据（属性）+功能（方法），闭包也可以理解为数据+功能，只不过此时数据是外部函数中的那些局部变量或者形参，而功能则是内部函数。
+# 对象适合完成较为复杂的功能，而闭包则更轻量
+# 对象：可以由N个属性 + N个方法组成
+# 闭包：可以由N个变量 +1个函数组成（当然也可以有N个函数，但是一般 只会写一个）
+
+def line_conf(a, b):
+    def line(x):
+        return a * x + b
+
+    def line2(x):
+        return 2 * a * x + 2 * b
+
+    return line, line2
 
 
-@timer
-def slow_function():
-    """计时装饰器示例"""
-    time.sleep(0.1)
-    return "done"
-
-
-@retry(max_attempts=3, delay=0.1)
-def unstable_task():
-    """带参数装饰器示例：模拟前两次失败，第三次成功"""
-    unstable_task.calls += 1
-    if unstable_task.calls < 3:
-        raise ValueError("网络临时异常")
-    return "请求成功"
-
-
-unstable_task.calls = 0
-
-
-@timer
-@logger
-def add(a, b):
-    """多个装饰器叠加：执行顺序等价于 add = timer(logger(add))"""
-    return a + b
-
-
-if __name__ == '__main__':
-    print(greet("小明", greeting="早上好"))
-    print(slow_function())
-    print(unstable_task())
-    print(add(10, 20))
-
-    # functools.wraps 会保留原函数名称和文档字符串，方便调试和生成文档
-    print(greet.__name__)  # greet
-    print(greet.__doc__)  # 普通装饰器示例：支持位置参数和关键字参数
+line, line2 = line_conf(1, 2)
+print(line(5))
+print(line2(5))

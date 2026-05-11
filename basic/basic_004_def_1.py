@@ -89,6 +89,12 @@ def apply_operation(func, x, y):
     """函数作为参数"""
     return func(x, y)
 
+ret = apply_operation(add, 2, 3)
+print(ret)
+
+ret = apply_operation(multiply, 2, 3)
+print(ret)
+
 
 # ---------- 5. lambda 表达式 ----------
 # Lambda 表达式是 Python 的匿名函数，用一行代码创建简单函数
