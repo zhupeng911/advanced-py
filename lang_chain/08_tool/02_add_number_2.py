@@ -3,26 +3,16 @@ from pydantic import BaseModel, Field
 
 
 # Pydantic = "类型注解 + 自动校验 + 类型转换"，让Python在运行也能享受静态类型的安全感
-# class User(BaseModel):
-#     no: StrictInt  # 严格整数类型，拒绝自动类型转换
-#     id: int
-#     name: str
-#     age: int = 0
-#
-#
-# try:
-#     u = User(no=1, id=1, name="张三")
-#     # u = User(no="1", id=1, name="张三") # Input should be a valid integer [type=int_type, input_value='1', input_type=str]
-#     print(u)
-# except Exception as e:
-#     print(e)
-
+# 案例1：BaseModel 检查入参合法性
 class FieldInfo(BaseModel):
-    a: int = Field(description="字段a")
-    b: int = Field(description="字段b")
+    # name: str = Field(min_length=2, max_length=50)
+    # price: float = Field(gt=0, description="价格必须大于0")
+    # tags: list[str] = Field(default_factory=list)
+    a: int = Field(description="字段a", min_length=1, max_length=10)
+    b: int = Field(description="字段b", min_length=1, max_length=10)
 
 
-@tool(args_schema=FieldInfo)
+@tool("add_number", description="Add two numbers together", args_schema=FieldInfo, return_direct=True)
 def add_number(a: int, b: int) -> int:
     """Add two numbers together"""
     return a + b
