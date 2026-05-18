@@ -1,0 +1,14 @@
+{
+    "name": "张三",
+    "age": 25,
+    "skills": [
+        "Python",
+        "JavaScript",
+        "Go"
+    ],
+    "is_active": true,
+    "address": {
+        "city": "北京",
+        "district": "朝阳区"
+    }
+}

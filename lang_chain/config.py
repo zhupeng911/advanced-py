@@ -36,6 +36,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 LANGCHAIN_API_KEY = os.getenv("LANGCHAIN_API_KEY")
 AMAP_MAPS_API_KEY = os.getenv("AMAP_MAPS_API_KEY")
 CHATGPT_API_KEY = os.getenv("CHATGPT_API_KEY")
+DASHSCOPE_API_KEY = os.getenv("DASHSCOPE_API_KEY")
 
 if not OPENAI_API_KEY:
     raise ValueError("× 请在.env中设置OPENAI_API_KEY")
