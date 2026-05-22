@@ -1,44 +1,46 @@
+# 基础
 certifi==2026.2.25
 charset-normalizer==3.4.7
 idna==3.12
 PyYAML==6.0.3
 urllib3==2.6.3
-
-psycopg-pool
-
 psycopg[binary]>=3.1.0
 psycopg-pool>=3.1.0
 flask>=3.0.0
-python-dotenv>=1.0.0
-
-# langchain
-langchain==1.2.17
-langchain_chroma==1.1.0
-langchain_classic==1.0.4
-langchain_community==0.4.1
-langchain_openai==1.2.1
-langgraph==1.1.10
-langsmith==0.8.0
-mcp==1.25.0
-openai==2.33.0
 python-dotenv==1.2.1
 Requests==2.32.5
 setuptools==80.9.0
 streamlit==1.52.2
+
+# langchain
+langchain==1.2.17
+langchain_community==0.4.1
+langchain-text-splitters==1.1.2
+langchain_chroma==1.1.0
+langchain_classic==1.0.4
+langchain_openai==1.2.1
+langgraph==1.1.10
+langsmith==0.8.0
+openai==2.33.0
 openai-agents==0.15.0
 langchain-deepseek==1.0.1
-
 ollama==0.6.2
 langchain_ollama==1.1.0
-redis==5.3.1
-langchain-core==1.3.3
 pydantic==2.13.4
 
 # rag
-dashscope  # 安装最新的包，等价于dashscope==1.25.18
-pypdf
-jq
-unstructured
-markdown
-langchain-text-splitters
-langchain_redis
+dashscope==1.25.18
+redis==5.3.1
+docx2txt==0.8
+pypdf==6.12.1
+jq==1.11.0
+unstructured==0.18.32
+markdown==3.10.2
+
+# langchain_redis currently conflicts with LangChain 1.x because it requires langchain-core <0.4
+# langchain_redis
+
+# mcp
+mcp==1.25.0
+langchain-mcp-adapters==0.2.2
+fastmcp==3.3.1
