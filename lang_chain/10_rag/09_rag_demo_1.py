@@ -1,6 +1,6 @@
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.embeddings import DashScopeEmbeddings
-from langchain_redis import RedisConfig
+from langchain_community.vectorstores import Redis
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from lang_chain.config import DASHSCOPE_API_KEY
@@ -34,7 +34,8 @@ for idx, text in enumerate(embeddings, start=1):
     print(f'向量长度: {len(text)}')
 
 # 4.连接redis-stack
-vector_store = RedisConfig(
+vector_store = Redis.from_documents(
+    documents=splitter_documents,
     embedding=embedding_model,
     index_name="idx",
     redis_url="redis://localhost:6379",

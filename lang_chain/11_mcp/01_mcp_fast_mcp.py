@@ -11,7 +11,7 @@ def add(a: int, b: int) -> int:
 
 
 # 为MCP添加资源
-@mcp.resource("/greeting://default")
+@mcp.resource("greeting://default")
 def get_greeting() -> str:
     return "Hello from static resource"
 
