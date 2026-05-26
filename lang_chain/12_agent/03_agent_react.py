@@ -1,9 +1,11 @@
-
 from langchain.agents import create_agent
 from langchain.chat_models import init_chat_model
 from langchain_core.tools import tool
 
 from lang_chain.config import OPENAI_API_KEY
+
+# 功能：详细追踪Agent ReAct循环过程
+
 # 1.模拟产品数据库
 PRODUCT_DATABASE = {
     "无线耳机": [
@@ -50,10 +52,11 @@ INVENTORY_DATABASE = {
 
 # 3.工具1:搜索产品
 @tool
-def search_products(query: str) -> str | None:
-    """搜索产品并返回接受程度排序的结果"""
-    print(f'[工具调用,search_products({query})]')
+def search_products(prod_name: str) -> str | None:
+    """搜索产品并返回接受程度排序的结果"""  # 不要忘记注释
+    print(f'[工具调用,search_products({prod_name})]')
 
+    # 定义关键词映射，类似模糊查找
     keyword_mapping = {
         "无线耳机": ["无线耳机", "有线耳机", "蓝牙耳机"],
         "智能手表": ["智能手表", "智能手环", "智能腕表"],
@@ -63,7 +66,9 @@ def search_products(query: str) -> str | None:
     # 匹配类别
     matched_category = None
     for category, keywords in keyword_mapping.items():
-        if any(keyword in query for keyword in keywords):
+        # 遍历所有类别及其关键词
+        if any(keyword in prod_name for keyword in keywords):
+            # 如果商品名称中包含任意一个关键词，就返回这个类别
             matched_category = category
             break
     return matched_category
@@ -71,15 +76,15 @@ def search_products(query: str) -> str | None:
 
 # 4.工具2:搜索库存
 @tool
-def search_inventory(product_id: str) -> str:
-    """搜索库存并返回结果"""
-    print(f'[工具调用,search_inventory({product_id})]')
-    if product_id in INVENTORY_DATABASE:
-        stock_info = INVENTORY_DATABASE[product_id]
+def search_inventory(prod_id: str) -> str:
+    """搜索库存并返回结果"""  # 不要忘记注释
+    print(f'[工具调用,search_inventory({prod_id})]')
+    if prod_id in INVENTORY_DATABASE:
+        stock_info = INVENTORY_DATABASE[prod_id]
         status = "有库存" if stock_info["stock"] > 0 else "无库存"
-        return f"产品{product_id}: {status}, 库存数量: {stock_info['stock']}, 位置: {stock_info['location']}"
+        return f"产品{prod_id}: {status}, 库存数量: {stock_info['stock']}, 位置: {stock_info['location']}"
     else:
-        return "产品不存在:{product_id}"
+        return "产品不存在:{prod_id}"
 
 
 # 5.定义大模型与agent
@@ -93,11 +98,11 @@ agent = create_agent(
     model=llm,
     tools=[search_products, search_inventory],
     system_prompt="""
-    你是一个 helpful的助手.遵循ReAct模式
-    1. 理解用户输入
-    2. 选择合适的工具执行操作
-    3. 基于工具返回的结果进行下一步推理
-    4. 重复上述过程，直到得到最终结果
+        你是一个 helpful的助手.遵循ReAct模式
+        1. 理解用户输入
+        2. 选择合适的工具执行操作
+        3. 基于工具返回的结果进行下一步推理
+        4. 重复上述过程，直到得到最终结果
     """,
     response_format=None,
 )

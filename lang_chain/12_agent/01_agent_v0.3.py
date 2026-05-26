@@ -13,11 +13,11 @@ from lang_chain.config import OPENAI_API_KEY
 def get_weather(city: str) -> str:
     """根据城市名称查询天气信息。"""
     if city == "上海":
-        return "上海的天气为:{{'weather': 'sunny', 'temperature': '20摄氏度'}}"
+        return "上海的天气为:{'weather': 'sunny', 'temperature': '20摄氏度'}"
     elif city == "北京":
-        return "北京的天气为:{{'weather': 'sunny', 'temperature': '25摄氏度'}}"
+        return "北京的天气为:{'weather': 'sunny', 'temperature': '25摄氏度'}"
     else:
-        return "其他城市的天气为:{{'weather': 'sunny', 'temperature': '30摄氏度'}}"
+        return "其他城市的天气为:{'weather': 'sunny', 'temperature': '30摄氏度'}"
 
 
 tools = [get_weather]
@@ -51,5 +51,6 @@ agent_executor = AgentExecutor(
 )
 
 # 5.执行Agent
+# 入参：input 由提示词模版确定好了("human", "{input}"),
 result = agent_executor.invoke({"input": "请问北京和上海的天气，哪个城市更热"})
-print(f'AgentExecutor结果: {result}')
+print(f'AgentExecutor输出: {result["output"]}')
