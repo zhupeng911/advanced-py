@@ -8,7 +8,7 @@ llm = ChatOpenAI(
     api_key=OPENAI_API_KEY,
     base_url="https://api.deepseek.com"
 )
-
+# LangChain 会自动把 {"role": "...", "content": "..."} 格式的 dict 转换为对应的 SystemMessage、HumanMessage 等对象
 messages = [
     {"role": "system", "content": "你是一个Python专家"},
     {"role": "user", "content": "那你是谁"}

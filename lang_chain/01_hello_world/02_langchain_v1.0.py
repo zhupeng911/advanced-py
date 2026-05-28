@@ -12,4 +12,6 @@ llm = init_chat_model(
 
 # 调用语言模型
 response = llm.invoke("你是谁")
+print("response", response)
+print("response.response_metadata", response.response_metadata)
 print("response.content", response.content)

@@ -12,14 +12,12 @@ logger = logging.getLogger(__name__)
 
 # 2.创建一个语言模型
 def init_llm_client():
-    llm = init_chat_model(
+    return init_chat_model(
         model="deepseek-chat",
         model_provider="deepseek",
         api_key=OPENAI_API_KEY,
         base_url="https://api.deepseek.com"
     )
-
-    return llm
 
 
 # 3.主函数

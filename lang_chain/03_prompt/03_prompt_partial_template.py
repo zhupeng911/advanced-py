@@ -8,7 +8,8 @@ from lang_chain.config import OPENAI_API_KEY
 # 部分提示词实例化提示词模版
 # 1.创建一个PromptTemplate对象，时间变量使用partial_variables预设，其他变量使用input_variables预设
 prompt_template = PromptTemplate.from_template(
-    "当前时间: {time}, 你是一个专业的{role},请回答我的问题：{question}",
+    template="当前时间: {time}, 你是一个专业的{role},请回答我的问题：{question}",
+    input_variables=["role", "question"],
     partial_variables={
         "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
