@@ -19,7 +19,6 @@ langchain-text-splitters==1.1.2
 langchain_chroma==1.1.0
 langchain_classic==1.0.4
 langchain_openai==1.2.1
-langgraph==1.1.10
 langsmith==0.8.0
 openai==2.33.0
 openai-agents==0.15.0
@@ -46,3 +45,7 @@ langchain-mcp-adapters==0.2.2
 fastmcp==3.3.1
 
 langchain-core
+
+# langgraph
+langgraph==1.1.10
+grandalf
