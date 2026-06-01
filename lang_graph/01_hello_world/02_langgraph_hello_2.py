@@ -7,16 +7,16 @@ from langgraph.graph import StateGraph
 # 节点2: x-2
 
 
-# 1. 定义State【非必须】
+# 1. 定义State【非必须，但推荐使用TypedDict以获得类型提示和字段约束】
 
 # 2.定义节点Node1
-def addition(state):
+def addition(state: dict):
     print(f'addition节点：{state}')
     return {"x": state["x"] + 1}
 
 
 # 3.定义节点Node2
-def subtraction(state):
+def subtraction(state: dict):
     print(f'subtraction节点：{state}')
     return {"x": state["x"] - 2}
 

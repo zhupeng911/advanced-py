@@ -7,9 +7,9 @@ from langgraph.graph import StateGraph
 # 需求 mul数值相乘
 # 0. 自定义策略
 def custom_strategy(current: int, update: int) -> int:
-    """自定义策略： 处理乘法测略初始值为1"""
+    """自定义策略：处理乘法策略初始值为0的问题"""
     if current == 0:
-        return 1.0 * update
+        return update  # 初值为0时，直接使用update作为起点
     return current * update
 
 
@@ -27,18 +27,18 @@ def node_2(state: MultiplyIntState) -> dict:
     return {"data": 3}
 
 
-# 4.构建图Graph
+# 3.构建图Graph
 graph = StateGraph(MultiplyIntState)
-# 4.1 添加节点
+# 3.1 添加节点
 graph.add_node("node_1", node_1)
 graph.add_node("node_2", node_2)
 graph.add_edge(START, "node_1")
 graph.add_edge("node_1", "node_2")
 graph.add_edge("node_2", END)
 
-# 5.编译
+# 4.编译
 app = graph.compile()
 
-# 6.运行
+# 5.运行
 result = app.invoke({"data": 10})
 print(result)

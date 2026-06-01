@@ -23,21 +23,22 @@ def node_2(state: MultiplyIntState) -> dict:
     return {"data": 3}
 
 
-# 4.构建图Graph
+# 3.构建图Graph
 graph = StateGraph(MultiplyIntState)
-# 4.1 添加节点
+# 3.1 添加节点
 graph.add_node("node_1", node_1)
 graph.add_node("node_2", node_2)
+# 3.2 添加边
 graph.add_edge(START, "node_1")
 graph.add_edge("node_1", "node_2")
 graph.add_edge("node_2", END)
 
-# 5.编译
+# 4.编译
 app = graph.compile()
 
-# 6.运行
-# 大坑：结果为0
+# 5.运行
+# 大坑：当初值为0时，结果为0
 # 原因：默认乘法的初始值为0，而0乘以任何数都等于0
-# 解决方法：自定义策略，将初始值设为1
-result = app.invoke({"data": 10})
-print(result)  #
+# 解决方法：自定义策略，将初始值设为1（见08_state_reducer_custom.py）
+print(app.invoke({"data": 10}))  # {'data': 60}  10*2*3
+print(app.invoke({"data": 0}))   # {'data': 0}   ← 大坑：0*2*3=0

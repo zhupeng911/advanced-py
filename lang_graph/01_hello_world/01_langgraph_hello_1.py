@@ -5,7 +5,7 @@ from langgraph.graph import StateGraph
 
 
 # 1. 定义State（可选，但推荐）
-# PS：HelloState只是一个"形状说明书"，定义有哪些字段、是什么类型，它本身不存数据，真正的数据在运行时由 app.invoke({...}) 注入。
+# PS：MyState只是一个"形状说明书"，定义有哪些字段、是什么类型，它本身不存数据，真正的数据在运行时由 app.invoke({...}) 注入。
 class MyState(TypedDict):
     name: str
     greeting: str
@@ -31,7 +31,7 @@ graph = StateGraph(MyState)
 # 4.1 添加节点
 graph.add_node("add_greeting", add_greeting)
 graph.add_node("add_emoji", add_emoji)
-# 4.1 添加边
+# 4.2 添加边
 graph.add_edge(START, "add_greeting")
 graph.add_edge("add_greeting", "add_emoji")
 graph.add_edge("add_emoji", END)

@@ -25,18 +25,19 @@ def node_2(state: DefaultReducerState) -> dict:
     return {"name": "Bob", "hobby": ["足球", "乒乓球"]}
 
 
-# 4.构建图Graph
+# 3.构建图Graph
 graph = StateGraph(DefaultReducerState)
-# 4.1 添加节点
+# 3.1 添加节点
 graph.add_node("node_1", node_1)
 graph.add_node("node_2", node_2)
+# 3.2 添加边
 graph.add_edge(START, "node_1")
 graph.add_edge("node_1", "node_2")
 graph.add_edge("node_2", END)
 
-# 5.编译
+# 4.编译
 app = graph.compile()
 
-# 6.运行
-result = app.invoke({"name": "Alice", "hobby": ["nothing"]})
+# 5.运行
+result = app.invoke({"name": "张三", "hobby": ["nothing"]})
 print(result)
