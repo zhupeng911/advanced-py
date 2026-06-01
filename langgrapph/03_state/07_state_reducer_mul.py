@@ -7,16 +7,19 @@ from langgraph.graph import StateGraph
 
 # 需求 mul数值相乘
 # 1. 定义State
+# Annotated 是 Python 给类型注解开的"扩展槽"——类型系统看不见这些元数据，但你的框架（LangGraph、Pydantic、FastAPI…）能读到，并据此决定字段的校验、合并、解析等额外行为
 class MultiplyIntState(TypedDict):
-    data: Annotated[int, operator.mul]
+    data: Annotated[int, operator.mul]  # 新data = 旧data * 节点返回的data
 
 
 # 2.定义节点Node
 def node_1(state: MultiplyIntState) -> dict:
+    print("node_1", state["data"])
     return {"data": 2}
 
 
 def node_2(state: MultiplyIntState) -> dict:
+    print("node_2", state["data"])
     return {"data": 3}
 
 

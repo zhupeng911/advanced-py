@@ -5,23 +5,24 @@ from langgraph.graph import StateGraph
 
 
 # 1. 定义State（可选，但推荐）
+# 默认State数据更新方式为：覆盖式更新
 class GraphState(TypedDict):
     process_data: dict
 
 
 # 2.定义节点Node
-def input_node(graph_state: GraphState) -> GraphState:
-    print(f'input_node: {graph_state["process_data"]}')
+def input_node(state: GraphState) -> GraphState:
+    print(f'input_node: {state["process_data"]}')
     return {"process_data": {"input": "111"}}
 
 
-def process_node(graph_state: GraphState) -> GraphState:
-    print(f'process_node: {graph_state["process_data"]}')
+def process_node(state: GraphState) -> GraphState:
+    print(f'process_node: {state["process_data"]}')
     return {"process_data": {"input": "222"}}
 
 
-def output_node(graph_state: GraphState) -> GraphState:
-    print(f'output_node: {graph_state["process_data"]}')
+def output_node(state: GraphState) -> GraphState:
+    print(f'output_node: {state["process_data"]}')
     return {"process_data": {"output": "333"}}
 
 

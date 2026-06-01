@@ -41,4 +41,4 @@ app = graph.compile()
 
 # 6.运行
 result = app.invoke({"data": 10})
-print(result)  #
+print(result)

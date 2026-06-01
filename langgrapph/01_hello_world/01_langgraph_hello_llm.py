@@ -26,8 +26,8 @@ llm = init_chat_model(
 )
 
 
-def node_1(my_state: MyState):
-    reply = llm.invoke(my_state["messages"])
+def node_1(state: MyState):
+    reply = llm.invoke(state["messages"])
     return {"messages": reply}  # 返回信息，自动添加到消息列表
 
 

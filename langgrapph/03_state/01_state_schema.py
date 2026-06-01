@@ -4,7 +4,7 @@ from langgraph.constants import START, END
 from langgraph.graph import StateGraph
 
 
-# 需求：定义图的输入、输出模式
+# 学术要求：分别定义输入、输出状态、整体模式，但一般统一使用一个即可
 
 # 1. 定义状态
 # 1.1 定义输入状态模式
