@@ -5,6 +5,8 @@ from langgraph.constants import END, START
 from langgraph.graph import StateGraph
 
 
+# stream 流式输出：custom：自定义输出
+
 # 定义状态
 class State(TypedDict):
     query: str
@@ -21,7 +23,7 @@ def node(state: State):
 
 if __name__ == "__main__":
     # 创建图
-    graph = (
+    app = (
         StateGraph(State)
         .add_node("node", node)
         .add_edge(START, "node")
@@ -34,5 +36,5 @@ if __name__ == "__main__":
     # for chunk in graph.stream(inputs, stream_mode=["custom"]):
     #     print(chunk, end="")
 
-    for chunk in graph.stream(inputs, stream_mode=["custom", "values"]):
+    for chunk, meta_data in app.stream(inputs, stream_mode=["custom", "values"]):
         print(chunk, end="")

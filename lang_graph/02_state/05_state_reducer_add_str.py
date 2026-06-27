@@ -13,10 +13,12 @@ class AddStrState(TypedDict):
 
 # 2.定义节点Node
 def node_1(state: AddStrState) -> dict:
+    print(f'node_1: {state["data"]}')
     return {"data": "node_1"}
 
 
 def node_2(state: AddStrState) -> dict:
+    print(f'node_2: {state["data"]}')
     return {"data": " node_2"}
 
 

@@ -10,7 +10,7 @@ from langgraph.types import Send
 # 使得我们可以根据运行时状态来决定执行路径。
 # 解释:
 # (1)首先执行 generate_subjects主题列表:['猫’，‘狗’，‘程序员']
-# (2)然后通过条件边函数 map_subjects_to_kokes为每个主题创建一个Send 对象
+# (2)然后通过条件边函数 map_subjects_to_jokes为每个主题创建一个Send 对象
 # (3)make_joke 节点被并行执行3次，每次处理一个主题
 # (4)最终将所有生成的笑话合并到一个列表中
 # 这种模式非常适合处理动态数量的任务
@@ -18,7 +18,7 @@ from langgraph.types import Send
 # 定义状态
 class State(TypedDict):
     subjects: List[str]
-    jokes: Annotated[List[str], lambda x, y: x + y]
+    jokes: Annotated[List[str], lambda x, y: x + y]  # 等价于 jokes: Annotated[List[str], add_messages]
 
 
 # 定义节点1:生成需要的主题列表
@@ -29,11 +29,22 @@ def generate_subjects(state: State) -> dict:
 
 
 # 定义条件边函数：根据主题列表生成Send对象列表
+# 当 subjects = ["猫", "狗", "程序员"] 时，这行代码生成
+# [
+#   Send("make_joke", {"subject": "猫"}),
+#   Send("make_joke", {"subject": "狗"}),
+#   Send("make_joke", {"subject": "程序员"})
+# ]
 def map_subjects_to_jokes(state: State) -> List[Send]:
     subjects = state.get("subjects", [])
     print(f"2.Mapping subjects to jokes: {subjects}")
-    send_list = [Send("make_joke", {"subject": subject}) for subject in subjects]
-    return send_list
+    return [
+        Send(
+            "make_joke",  # 目标节点
+            {"subject": subject}  # 传递参数
+        )
+        for subject in subjects
+    ]
 
 
 # 定义Map节点2：为每个主题创建一个笑话

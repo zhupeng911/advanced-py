@@ -21,7 +21,7 @@ def generate_joke(state: State):
 
 if __name__ == "__main__":
     # 创建图
-    graph = (
+    app = (
         StateGraph(State)
         .add_node("refine_topic", refine_topic)
         .add_node("generate_joke", generate_joke)
@@ -31,21 +31,21 @@ if __name__ == "__main__":
         .compile()
     )
     # 流式运行：updates
-    for chunk in graph.stream({"topic": "dogs"}, stream_mode="updates"):
+    for chunk in app.stream({"topic": "dogs"}, stream_mode="updates"):
         print(chunk)
     print("--------------------------------")
 
     # 流式运行：values
-    for chunk in graph.stream({"topic": "dogs"}, stream_mode="values"):
+    for chunk in app.stream({"topic": "dogs"}, stream_mode="values"):
         print(chunk)
     print("--------------------------------")
 
     # 流式运行：debug
-    for chunk in graph.stream({"topic": "dogs"}, stream_mode="debug"):
+    for chunk in app.stream({"topic": "dogs"}, stream_mode="debug"):
         print(chunk)
     print("--------------------------------")
 
     # 流式运行【混合】：updates + values
-    for chunk in graph.stream({"topic": "dogs"}, stream_mode=["updates", "values"]):
+    for chunk in app.stream({"topic": "dogs"}, stream_mode=["updates", "values"]):
         print(chunk)
     print("--------------------------------")

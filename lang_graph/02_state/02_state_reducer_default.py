@@ -1,4 +1,5 @@
-from typing import TypedDict, List
+import operator
+from typing import TypedDict, List, Annotated
 
 from langgraph.constants import START, END
 from langgraph.graph import StateGraph
@@ -10,6 +11,7 @@ from langgraph.graph import StateGraph
 class DefaultReducerState(TypedDict):
     name: str
     hobby: List[str]
+    # hobby: Annotated[List[str], operator.add]  # 追加
 
 
 # 2.定义节点Node

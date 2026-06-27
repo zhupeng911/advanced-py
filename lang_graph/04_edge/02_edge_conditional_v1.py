@@ -4,7 +4,7 @@ from langgraph.constants import START
 from langgraph.graph import StateGraph
 
 
-# 条件边：分支路由（Router -> Weather/Chat）
+# 条件边：add_conditional_edges 2个分支
 
 # 1. 定义State
 class MyState(TypedDict):
@@ -55,3 +55,4 @@ app = graph.compile()
 # result = app.invoke({"x": 3})
 result = app.invoke({"x": 4})
 print(result)
+print(app.get_graph().print_ascii())

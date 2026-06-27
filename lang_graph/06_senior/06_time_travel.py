@@ -1,5 +1,6 @@
 from typing import TypedDict, NotRequired
 
+from langchain_core.runnables import RunnableConfig
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.constants import END, START
 from langgraph.graph import StateGraph
@@ -47,17 +48,17 @@ def create_ending(state: StoryState):
 
 # 构建图
 def create_graph():
-    builder = StateGraph(StoryState)
-    builder.add_node("create_character", create_character)
-    builder.add_node("create_setting", create_setting)
-    builder.add_node("create_plot", create_plot)
-    builder.add_node("create_ending", create_ending)
-    builder.add_edge(START, "create_character")
-    builder.add_edge("create_character", "create_setting")
-    builder.add_edge("create_setting", "create_plot")
-    builder.add_edge("create_plot", "create_ending")
-    builder.add_edge("create_ending", END)
-    return builder
+    graph = StateGraph(StoryState)
+    graph.add_node("create_character", create_character)
+    graph.add_node("create_setting", create_setting)
+    graph.add_node("create_plot", create_plot)
+    graph.add_node("create_ending", create_ending)
+    graph.add_edge(START, "create_character")
+    graph.add_edge("create_character", "create_setting")
+    graph.add_edge("create_setting", "create_plot")
+    graph.add_edge("create_plot", "create_ending")
+    graph.add_edge("create_ending", END)
+    return graph
 
 
 if __name__ == "__main__":
@@ -68,9 +69,7 @@ if __name__ == "__main__":
 
     # 第一次运行图
     print("第一个故事...")
-    config_1 = {
-        "configurable": {"thread_id": "story_1"}
-    }
+    config_1 = RunnableConfig(configurable={"thread_id": "story_1"})
     result_1 = app.invoke({}, config_1)
     print(f"结果: {result_1}")
 

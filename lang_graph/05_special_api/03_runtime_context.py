@@ -3,13 +3,13 @@ from typing import TypedDict, Annotated
 
 from langchain_core.messages import AIMessage
 from langgraph.constants import END, START
-from langgraph.graph import StateGraph
+from langgraph.graph import StateGraph, add_messages
 from langgraph.runtime import Runtime
 
 
 # 定义状态
 class AgentState(TypedDict):
-    messages: Annotated[list, lambda x, y: x + y]
+    messages: Annotated[list, add_messages]
     response: str
 
 

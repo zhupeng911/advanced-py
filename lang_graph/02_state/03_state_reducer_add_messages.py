@@ -28,9 +28,8 @@ graph = StateGraph(AddMessagesState)
 graph.add_node("node_1", node_1)
 graph.add_node("node_2", node_2)
 # 3.2 添加边
-graph.add_edge(START, "node_1")  # 并行
-graph.add_edge(START, "node_2")  # 并行
-graph.add_edge("node_1", END)
+graph.add_edge(START, "node_1")
+graph.add_edge("node_1", "node_2")
 graph.add_edge("node_2", END)
 
 # 4.编译

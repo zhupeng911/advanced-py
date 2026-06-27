@@ -6,7 +6,7 @@ from typing_extensions import TypedDict, Any
 
 
 # 节点重试策略：默认重试策略、自定义重试策略、不可重试策略
-# 1.定义状态类
+# 1.定义状态
 class State(TypedDict):
     result: int
 

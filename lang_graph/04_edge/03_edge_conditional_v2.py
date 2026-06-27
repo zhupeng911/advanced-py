@@ -4,6 +4,9 @@ from langgraph.constants import START, END
 from langgraph.graph import StateGraph
 
 
+# 条件边：add_conditional_edges 3个分支
+# 条件入口点：根据输入内容决定从START节点去往下一个处理节点
+
 # 1. 定义State
 class MyState(TypedDict):
     x: int
@@ -45,11 +48,14 @@ graph.add_node("add_1", add_1)
 graph.add_node("add_2", add_2)
 graph.add_node("add_3", add_3)
 # 4.1 添加条件边
-graph.add_conditional_edges(START, route_by_sentiment, {
-    "add_1": "add_1",
-    "add_2": "add_2",
-    "add_3": "add_3"
-})
+graph.add_conditional_edges(
+    START,  # 起始节点
+    route_by_sentiment,  # 路由函数
+    {  # 路由表
+        "add_1": "add_1",
+        "add_2": "add_2",
+        "add_3": "add_3"
+    })
 graph.add_edge("add_1", END)
 graph.add_edge("add_2", END)
 graph.add_edge("add_3", END)

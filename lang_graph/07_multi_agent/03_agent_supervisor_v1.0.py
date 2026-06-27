@@ -1,17 +1,11 @@
 from langchain.agents import create_agent
-from langchain.chat_models import init_chat_model
 from langchain_core.messages import AIMessage, HumanMessage
 from langgraph_supervisor import create_supervisor
 
-from lang_chain.config import OPENAI_API_KEY
+from lang_graph.llm import init_llm
 
 # 1.初始化大语言模型
-llm = init_chat_model(
-    model="deepseek-chat",
-    model_provider="deepseek",
-    api_key=OPENAI_API_KEY,
-    base_url="https://api.deepseek.com",
-)
+llm = init_llm()
 
 
 # 2.定义工具

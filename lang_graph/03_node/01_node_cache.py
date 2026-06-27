@@ -6,13 +6,13 @@ from langgraph.types import CachePolicy
 from typing_extensions import TypedDict
 
 
-# 1.定义状态类，业务实体
+# 1.定义状态
 class State(TypedDict):
     x: int
     result: int
 
 
-# 2.定义节点（略）
+# 2.定义节点
 def node_1(state: State) -> dict[str, int]:
     time.sleep(3)
     return {"result": state["x"] * 2}
@@ -37,8 +37,13 @@ print("第二次开始运行:有缓存")
 result = app.invoke({"x": 2})
 print(f'第二次运行结果: {result}')
 
-# 7.第三次运行，等待缓存过期
-time.sleep(5)
-print("第三次开始运行:缓存过期")
-result = app.invoke({"x": 2})
+# 6.第三次运行，无缓存： 3s返回结果
+print("第三次开始运行:无缓存")
+result = app.invoke({"x": 3})
 print(f'第三次运行结果: {result}')
+
+# 7.第四次运行，等待缓存过期
+time.sleep(5)
+print("第四次开始运行:缓存过期")
+result = app.invoke({"x": 2})
+print(f'第四次运行结果: {result}')

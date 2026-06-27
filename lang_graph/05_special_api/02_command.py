@@ -1,14 +1,14 @@
 from typing import TypedDict, List, Annotated
 
 from langgraph.constants import END, START
-from langgraph.graph import StateGraph
+from langgraph.graph import StateGraph, add_messages
 from langgraph.types import Command
 
 
 # LangGraph Command 模式演示:状态更新+流程控制+动态路由
 # 定义状态
 class AgentState(TypedDict):
-    messages: Annotated[List[str], lambda x, y: x + y]
+    messages: Annotated[List[str], add_messages]
     current_agent: str
     task_completed: bool
 

@@ -3,7 +3,7 @@ from typing import TypedDict
 from langgraph.constants import START, END
 from langgraph.graph import StateGraph
 
-
+# 普通边
 # 1. 定义State
 class MyState(TypedDict):
     name: str

@@ -1,12 +1,12 @@
 from typing import TypedDict
 
-from langchain.chat_models import init_chat_model
 from langgraph.constants import END, START
 from langgraph.graph import StateGraph
 
-from lang_chain.config import OPENAI_API_KEY
+from lang_graph.llm import init_llm
 
 
+# stream 流式输出：messages：专门实时输出LLM的每一个字/词
 # 定义状态
 class State(TypedDict):
     query: str
@@ -17,12 +17,7 @@ class State(TypedDict):
 def node(state: State):
     print('node开始...')
 
-    model = init_chat_model(
-        model="deepseek-chat",
-        model_provider="deepseek",
-        api_key=OPENAI_API_KEY,
-        base_url="https://api.deepseek.com"
-    )
+    model = init_llm()
     result = model.invoke(["user", state["query"]])
     print('node结束...')
     return {"answer": result}
@@ -30,7 +25,7 @@ def node(state: State):
 
 if __name__ == "__main__":
     # 创建图
-    graph = (
+    app = (
         StateGraph(State)
         .add_node("node", node)
         .add_edge(START, "node")
@@ -40,6 +35,6 @@ if __name__ == "__main__":
     inputs = {"query": "写100字介绍LangChain"}
 
     # 流式运行：LLM
-    for chunk, meta_data in graph.stream(inputs, stream_mode="messages"):
+    for chunk, meta_data in app.stream(inputs, stream_mode="messages"):
         # print(chunk, end="")
         print(chunk.content, end="")

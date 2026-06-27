@@ -1,6 +1,7 @@
 import operator
 from typing import TypedDict, Annotated
 
+from langchain_core.runnables import RunnableConfig
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.constants import END, START
 from langgraph.graph import StateGraph
@@ -9,13 +10,13 @@ from langgraph.graph import StateGraph
 # LangGraph持久化-内存
 
 # 定义状态
-class PersistenceState(TypedDict):
+class State(TypedDict):
     messages: Annotated[list, operator.add]
     step_count: Annotated[int, operator.add]
 
 
 # 定义节点
-def step_one(state: PersistenceState) -> dict:
+def step_one(state: State) -> dict:
     print("Step one")
     return {
         "messages": ["执行了step one"],
@@ -23,7 +24,7 @@ def step_one(state: PersistenceState) -> dict:
     }
 
 
-def step_two(state: PersistenceState) -> dict:
+def step_two(state: State) -> dict:
     print("Step two")
     return {
         "messages": ["执行了step two"],
@@ -31,7 +32,7 @@ def step_two(state: PersistenceState) -> dict:
     }
 
 
-def step_three(state: PersistenceState) -> dict:
+def step_three(state: State) -> dict:
     print("Step three")
     return {
         "messages": ["执行了step three"],
@@ -41,15 +42,15 @@ def step_three(state: PersistenceState) -> dict:
 
 # 构建图
 def create_graph():
-    builder = StateGraph(PersistenceState)
-    builder.add_node("step_one", step_one)
-    builder.add_node("step_two", step_two)
-    builder.add_node("step_three", step_three)
-    builder.add_edge(START, "step_one")
-    builder.add_edge("step_one", "step_two")
-    builder.add_edge("step_two", "step_three")
-    builder.add_edge("step_three", END)
-    return builder
+    graph = StateGraph(State)
+    graph.add_node("step_one", step_one)
+    graph.add_node("step_two", step_two)
+    graph.add_node("step_three", step_three)
+    graph.add_edge(START, "step_one")
+    graph.add_edge("step_one", "step_two")
+    graph.add_edge("step_two", "step_three")
+    graph.add_edge("step_three", END)
+    return graph
 
 
 if __name__ == "__main__":
@@ -59,7 +60,7 @@ if __name__ == "__main__":
     app = graph.compile(checkpointer=InMemorySaver())
 
     # 运行图：配置线程id
-    config = {"configurable": {"thread_id": "zhupeng"}}
+    config = RunnableConfig(configurable={"thread_id": "zhupeng"})
     result = app.invoke({"messages": ["开始执行"], "step_count": 0}, config)
     print(f'结果: {result}')
 
