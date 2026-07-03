@@ -53,7 +53,7 @@ except ValidationError as e:
 # ---- 5.3 UUID ----
 class UUIDModel(BaseModel):
     user_id: UUID
-    trace_id: UUID = Field(default_factory=uuid.uuid4)
+    trace_id: UUID = Field(default_factory=uuid.uuid4)  # 默认值为随机自动生成
 
 
 print("\n=== 5.3 UUID ===")
@@ -124,6 +124,7 @@ for bad_data, desc in [
 
 # ============================================================
 # 七、Literal 与 Enum
+# 当字段的取值只能是固定的几个选项时，有两种选择：Literal 和 Enum。
 # ============================================================
 
 # ---- 7.1 Literal：限定为固定字面值 ----
@@ -163,6 +164,7 @@ except ValidationError as e:
 
 # ============================================================
 # 八、model_config 常用配置
+# model_config 是 Pydantic V2 的全局配置入口
 # ============================================================
 
 print("\n=== 八、model_config ===")
@@ -200,6 +202,7 @@ print(f"extra='ignore': name={m.name}, hobby 被丢弃无提示")
 
 
 # ---- 8.2 frozen：不可变模型 ----
+# 配置对象创建后不允许修改，适合系统配置、密钥存储等：
 class Config(BaseModel):
     model_config = {"frozen": True}
     api_key: str
@@ -271,12 +274,12 @@ print(f"别名输入: {m1.user_name}, 原名输入: {m2.user_name}")
 # ---- 8.6 综合配置 ----
 class FullConfigModel(BaseModel):
     model_config = {
-        "extra": "forbid",
-        "frozen": False,
-        "from_attributes": True,
-        "validate_assignment": True,
-        "populate_by_name": True,
-        "str_strip_whitespace": True,  # 自动去除 str 首尾空格
+        "extra": "forbid",  # 拒绝多余字段
+        "frozen": False,  # 允许修改
+        "from_attributes": True,  # 支持 ORM 对象
+        "validate_assignment": True,  # 赋值校验
+        "populate_by_name": True,  # 名/别名双通
+        "str_strip_whitespace": True,  # 自动 trim 字符串
     }
     username: str
     email: EmailStr
