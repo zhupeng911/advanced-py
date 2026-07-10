@@ -8,6 +8,17 @@
 
 from fastapi import Depends, Header, HTTPException, Query
 
+from core.config.pg_config import SessionLocal
+
+
+def get_db():
+    """数据库会话依赖：路由用完自动关闭"""
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
 
 # ---------------------------------------------------------------------------
 # 1. 通用参数提取：分页参数

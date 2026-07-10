@@ -1,12 +1,17 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+# 导入所有 model，确保 Base.metadata 能发现所有表
+import core.po.user  # noqa
+from core.config.pg_config import create_database, db_engine, Base
 from depends.depends_route import depends_route
 from exception.exception_handlers import register_exception_handlers
 from exception.exception_route import exception_route
 from middleware.middlewares import TimingMiddleware
-from routes.shop_route import shop_route
-from routes.user_route import user_route
+from core.routes.shop_route import shop_route
+from core.routes.user_route import user_route
 
 """
 FastAPI 案例集合
@@ -24,8 +29,17 @@ FastAPI 案例集合
     访问 http://127.0.0.1:8000/docs 查看 Swagger 文档
 """
 
+
+# 0.启动时自动建库 + 建表
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_database()
+    Base.metadata.create_all(bind=db_engine)
+    yield
+
+
 # 1.创建FastAPI应用实例
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 # 2. 路由注册
 app.include_router(shop_route, prefix="/shop", tags=["购物车模块接口"])
