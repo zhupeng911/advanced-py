@@ -57,3 +57,7 @@ langgraph-supervisor==0.0.31
 # fastapi
 fastapi==0.139.0
 uvicorn==0.49.0
+
+# machine-learing
+scikit-learn
+matplotlib
