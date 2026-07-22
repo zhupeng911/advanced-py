@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Cookie, Header
 from sqlalchemy.orm import Session
 
-from depends.depends import get_db
 from core.service import user_service
-from vo.user import UserCreateVo, UserResponse, RegisterVo, SetPasswordVo
+from core.vo.base import UserCreateVo, UserResponse, RegisterVo, SetPasswordVo
+from depends.depends import get_db
 
 # 创建用户模块的分路由
 user_route = APIRouter(tags=["用户模块接口"])

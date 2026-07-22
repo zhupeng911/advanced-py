@@ -5,13 +5,13 @@ from fastapi.middleware.cors import CORSMiddleware
 
 # 导入所有 model，确保 Base.metadata 能发现所有表
 import core.po.user  # noqa
-from core.config.pg_config import create_database, db_engine, Base
+from core.config.pg_config import DbEngine, Base
+from core.route.shop_route import shop_route
+from core.route.user_route import user_route
 from depends.depends_route import depends_route
 from exception.exception_handlers import register_exception_handlers
 from exception.exception_route import exception_route
 from middleware.middlewares import TimingMiddleware
-from core.routes.shop_route import shop_route
-from core.routes.user_route import user_route
 
 """
 FastAPI 案例集合
@@ -30,11 +30,10 @@ FastAPI 案例集合
 """
 
 
-# 0.启动时自动建库 + 建表
+# 0.项目启动自动建库/建表
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    create_database()
-    Base.metadata.create_all(bind=db_engine)
+    Base.metadata.create_all(bind=DbEngine)
     yield
 
 

@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy.orm import Session
 
 from core.po.shop import Shop
-from vo.shop import ShopCreateVo
+from core.vo.base import ShopCreateVo
 
 
 def get_all_shops(db: Session) -> list[Shop]:

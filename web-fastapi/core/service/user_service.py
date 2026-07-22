@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy.orm import Session
 
 from core.po.user import User
-from vo.user import UserCreateVo
+from core.vo.base import UserCreateVo
 
 
 def get_users_page(db: Session, offset: int, limit: int) -> list[User]:

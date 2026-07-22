@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from sqlalchemy.orm import Session
 
+from core.vo.base import ShopCreateVo
 from depends.depends import get_db
 from core.service import shop_service
-from vo.shop import ShopCreateVo
 
 # 创建购物车模块的分路由
 shop_route = APIRouter(tags=["购物车模块接口"])
