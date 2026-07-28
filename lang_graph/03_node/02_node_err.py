@@ -4,23 +4,13 @@ from langgraph.graph import StateGraph
 from langgraph.types import RetryPolicy
 from typing_extensions import TypedDict, Any
 
-
 # 节点重试策略：默认重试策略、自定义重试策略、不可重试策略
-# 1.定义状态
-class State(TypedDict):
-    result: int
-
-
 global_counter = 0  # 全局计数器：记录API重试次数
 
 
-# 工具函数：生成图的编译
-def build_retry_graph(node_name: str, node_func, retry_policy: RetryPolicy):
-    graph = StateGraph(State)
-    graph.add_node(node_name, node_func, retry_policy=retry_policy)
-    graph.add_edge(START, node_name)
-    graph.add_edge(node_name, END)
-    return graph.compile()
+# 1.定义状态
+class State(TypedDict):
+    result: int
 
 
 # 2.定义节点：模拟不稳定的API调用
@@ -37,6 +27,15 @@ def unstable_api_call(state: State) -> dict[str, Any]:
 # 3.定义节点：模拟抛出ValueError异常
 def value_error_call(state: State) -> dict[str, int]:
     raise ValueError("模拟抛出ValueError异常")
+
+
+# 4.构建图的编译
+def build_retry_graph(node_name: str, node_func, retry_policy: RetryPolicy):
+    graph = StateGraph(State)
+    graph.add_node(node_name, node_func, retry_policy=retry_policy)
+    graph.add_edge(START, node_name)
+    graph.add_edge(node_name, END)
+    return graph.compile()
 
 
 # 测试1:默认重试策略
@@ -65,6 +64,7 @@ def custom_retry_on(exception: Exception) -> bool:
     if "模拟API调用失败" in err_msg:
         return True
     return False
+
 
 def test_custom_retry_strategy():
     global global_counter

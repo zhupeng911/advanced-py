@@ -6,6 +6,12 @@ from langgraph.graph import StateGraph, add_messages
 
 
 # 需求：add_messages，即向state中添加消息(消息列表专用)
+# add_messages(LangGraph专用)
+# 语法：messages: Annotated[list[BaseMessage],add_messages]
+# - 专门为消息设计的Reducer
+# - 新旧消息合并时，相同 ID 的消息会覆盖（用新消息替换旧消息），不同 ID 的则追加
+# - 支持 LangGraph 的消息管理特性，如 MessageState、消息更新等
+
 # 1. 定义State
 class AddMessagesState(TypedDict):
     messages: Annotated[list[BaseMessage], add_messages]

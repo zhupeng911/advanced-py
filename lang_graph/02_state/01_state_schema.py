@@ -26,14 +26,11 @@ class OverallState(InputState, OutputState):
 def node_1(input_state: InputState):
     print(f'node_1节点，输入：{input_state}')
     answer = "再见" if "bye" in input_state["question"] else "你好"
-    # 定义输出结果
-    result = {"answer": answer, "question": input_state["question"]}
-    return result
+    return {"answer": answer, "question": input_state["question"]}
 
 
 # 3.构建图Graph
 graph = StateGraph(OverallState, input_schema=InputState, output_schema=OutputState)
-
 # 3.1 添加节点
 graph.add_node("node_1", node_1)
 # 3.2 添加边

@@ -6,29 +6,33 @@ from langgraph.types import Send
 
 
 # LangGraph Map-Reduce 模式演示:
-# 通过使用 Send 对象，LangGraph 提供了一种优雅的方式来实现这种动态图结构，
-# 使得我们可以根据运行时状态来决定执行路径。
-# 解释:
-# (1)首先执行 generate_subjects主题列表:['猫’，‘狗’，‘程序员']
-# (2)然后通过条件边函数 map_subjects_to_jokes为每个主题创建一个Send 对象
-# (3)make_joke 节点被并行执行3次，每次处理一个主题
-# (4)最终将所有生成的笑话合并到一个列表中
-# 这种模式非常适合处理动态数量的任务
+# 定义：通过使用 Send 对象，使得我们可以根据运行时状态来决定执行路径，这种模式非常适合处理动态数量的任务
+#
+# 架构：
+#                ┌─ Send("make_joke", {"subject": "猫"}) ─→ make_joke ─┐
+#                │                                                       │
+#   generate ──→├─ Send("make_joke", {"subject": "狗"}) ─→ make_joke ──┼──→ jokes 自动合并
+#                │                                                       │
+#                └─ Send("make_joke", {"subject": "程序员"}) → make_joke ┘
+#                     ↑ Map 阶段（fan-out）                  ↑ Reduce 阶段（自动归并）
+# 步骤：
+#   1. Map — 条件边函数返回 List[Send]
+#   2. 并行执行 — 同一个节点被多次调用
+#   3. Reduce — 自动合并结果
 
-# 定义状态
+# 1.定义状态
 class State(TypedDict):
     subjects: List[str]
     jokes: Annotated[List[str], lambda x, y: x + y]  # 等价于 jokes: Annotated[List[str], add_messages]
 
 
-# 定义节点1:生成需要的主题列表
+# 2.定义节点1:生成需要的主题列表
 def generate_subjects(state: State) -> dict:
-    print(f"1.Generating subjects")
-    subjects = ["猫", "狗", "程序员"]
-    return {"subjects": subjects}
+    print(f"1.生成需要的主题列表")
+    return {"subjects": ["猫", "狗", "程序员"]}
 
 
-# 定义条件边函数：根据主题列表生成Send对象列表
+# 3.定义条件边函数：根据主题列表生成Send对象列表
 # 当 subjects = ["猫", "狗", "程序员"] 时，这行代码生成
 # [
 #   Send("make_joke", {"subject": "猫"}),
@@ -37,7 +41,7 @@ def generate_subjects(state: State) -> dict:
 # ]
 def map_subjects_to_jokes(state: State) -> List[Send]:
     subjects = state.get("subjects", [])
-    print(f"2.Mapping subjects to jokes: {subjects}")
+    print(f"2.将主题映射到笑话: {subjects}")
     return [
         Send(
             "make_joke",  # 目标节点
@@ -47,10 +51,10 @@ def map_subjects_to_jokes(state: State) -> List[Send]:
     ]
 
 
-# 定义Map节点2：为每个主题创建一个笑话
+# 4.定义Map节点2：为每个主题创建一个笑话
 def make_joke(state: State) -> dict:
     subject = state.get("subject", "其他")  # map_subjects_to_jokes的Send 动态注入
-    print(f"3.Making joke for {subject}")
+    print(f"3.为{subject}创建一个笑话")
 
     # 根据主题生成笑话
     jokes_map = {

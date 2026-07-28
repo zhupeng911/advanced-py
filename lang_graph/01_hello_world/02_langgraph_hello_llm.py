@@ -25,9 +25,7 @@ def node_1(state: MyState):
 
 # 3.构建图Graph
 graph = StateGraph(MyState)
-# 3.1 添加节点
 graph.add_node("node_1", node_1)
-# 3.2 添加边
 graph.add_edge(START, "node_1")
 graph.add_edge("node_1", END)
 

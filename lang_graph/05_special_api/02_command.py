@@ -5,7 +5,16 @@ from langgraph.graph import StateGraph, add_messages
 from langgraph.types import Command
 
 
-# LangGraph Command 模式演示:状态更新+流程控制+动态路由
+# LangGraph Command
+# 功能：Command 把状态更新 + 路由跳转合二为一，让节点函数的返回值同时决定"改什么"和"去哪"
+# 语法：
+#   @dataclass
+#   class Command(Generic[N]):
+#       graph: str | None = None      # 发到哪个图（None=当前图，PARENT=父图）
+#       update: Any | None = None     # 状态更新（替代原来的 dict 返回）
+#       resume: Any | None = None     # 中断后恢复的值（配合 interrupt()）
+#       goto: Send | Sequence[Send] | str = ()  # 下一步去哪
+
 # 定义状态
 class AgentState(TypedDict):
     messages: Annotated[List[str], add_messages]

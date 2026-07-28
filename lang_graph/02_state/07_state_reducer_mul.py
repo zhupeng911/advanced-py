@@ -7,7 +7,6 @@ from langgraph.graph import StateGraph
 
 # 需求 mul数值相乘
 # 1. 定义State
-# Annotated 是 Python 给类型注解开的"扩展槽"——类型系统看不见这些元数据，但你的框架（LangGraph、Pydantic、FastAPI…）能读到，并据此决定字段的校验、合并、解析等额外行为
 class MultiplyIntState(TypedDict):
     data: Annotated[int, operator.mul]  # 新data = 旧data * 节点返回的data
 
@@ -41,4 +40,3 @@ app = graph.compile()
 # 原因：默认乘法的初始值为0，而0乘以任何数都等于0
 # 解决方法：自定义策略，将初始值设为1（见08_state_reducer_custom.py）
 print(app.invoke({"data": 10}))  # {'data': 60}  10*2*3
-print(app.invoke({"data": 0}))   # {'data': 0}   ← 大坑：0*2*3=0

@@ -1,5 +1,4 @@
-import operator
-from typing import TypedDict, List, Annotated
+from typing import TypedDict, List
 
 from langgraph.constants import START, END
 from langgraph.graph import StateGraph
@@ -11,19 +10,18 @@ from langgraph.graph import StateGraph
 class DefaultReducerState(TypedDict):
     name: str
     hobby: List[str]
-    # hobby: Annotated[List[str], operator.add]  # 追加
 
 
 # 2.定义节点Node
 def node_1(state: DefaultReducerState) -> dict:
     print(f'node_1: {state["name"]}')
-    print(f'node_1: {state["hobby"]}')
+    print(f'node_1: {state["hobby"]} \n')
     return {"name": "Alice", "hobby": ["篮球"]}
 
 
 def node_2(state: DefaultReducerState) -> dict:
     print(f'node_2: {state["name"]}')
-    print(f'node_2: {state["hobby"]}')
+    print(f'node_2: {state["hobby"]} \n')
     return {"name": "Bob", "hobby": ["足球", "乒乓球"]}
 
 
