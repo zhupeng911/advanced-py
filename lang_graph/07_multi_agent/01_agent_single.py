@@ -1,8 +1,7 @@
 from langchain.agents import create_agent
-from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage
 
-from lang_chain.config import OPENAI_API_KEY
+from lang_graph.llm import init_llm
 
 
 # 单智能体
@@ -13,18 +12,15 @@ def get_weather(city: str) -> str:
 
 
 # 定义大模型
-llm = init_chat_model(
-    model="deepseek-chat",
-    model_provider="deepseek",
-    api_key=OPENAI_API_KEY,
-    base_url="https://api.deepseek.com"
-)
+llm = init_llm()
 
-# 使用LangGraph创建Agent
+# 定义Agent
 agent = create_agent(
     model=llm, # 添加模型
     tools=[get_weather], # 添加工具
 )
+
+# 测试Agent
 human_message = HumanMessage(content="今天北京的天气如何？")
 response = agent.invoke({"messages": [human_message]})
 print(response["messages"][-1].content)

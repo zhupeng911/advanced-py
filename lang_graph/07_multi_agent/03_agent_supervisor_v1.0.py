@@ -4,6 +4,28 @@ from langgraph_supervisor import create_supervisor
 
 from lang_graph.llm import init_llm
 
+#   架构图
+#
+#                         用户请求
+#                            │
+#                            ▼
+#                ┌─────────────────────┐
+#                │    supervisor        │  调度主管 (LLM)
+#                │  (create_supervisor) │  分析需求 → 分派任务
+#                └───┬─────────────┬───┘                                                                                  
+#                    │             │
+#           handoff  │             │  handoff
+#                    ▼             ▼
+#      ┌──────────────────┐  ┌──────────────────┐
+#      │ flight_assistant │  │ hotel_assistant  │
+#      │   (子agent 1)    │  │   (子agent 2)    │
+#      │                  │  │                  │
+#      │  tool:           │  │  tool:           │
+#      │  book_flight()   │  │  book_hotel()    │
+#      └──────────────────┘  └──────────────────┘
+#
+#   这是标准的 Supervisor-Worker 模式（也叫 Router-Runner）。
+
 # 1.初始化大语言模型
 llm = init_llm()
 
