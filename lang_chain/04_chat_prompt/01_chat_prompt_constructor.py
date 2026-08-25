@@ -4,12 +4,6 @@ from langchain_core.prompts import ChatPromptTemplate
 from lang_chain.config import OPENAI_API_KEY
 
 # 功能：3种入参、3种方法
-# 构造方法的入参:
-# tuple构成的列表，格式为[("role", "content"), ("role", "content")]
-# dict构成的列表，格式为[{"role": "content"}, {"role": "content"}]
-# Message类构成的列表，格式为[Message(role="content"), Message(role="content")]
-
-
 # 1.构造方法实例化提示词模版1：元组
 chat_prompt_template = ChatPromptTemplate(
     [

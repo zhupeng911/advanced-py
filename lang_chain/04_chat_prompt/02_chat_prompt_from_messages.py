@@ -33,7 +33,6 @@ chat_prompt_template = ChatPromptTemplate.from_messages(
 # 2.使用invoke方法格式化生成具体的提示词
 # 3.使用format方法格式化生成具体的提示词
 # chat_prompt = chat_prompt_template.format_messages(name='朱鹏', user_input='简述python发展历史')  # 关键字占位传参
-# chat_prompt = chat_prompt_template.format_messages(**{"name": "朱鹏", "user_input": "简述python发展历史"})  # 解包
 # chat_prompt = chat_prompt_template.invoke({"name": "朱鹏", "user_input": "简述python发展历史"})
 chat_prompt = chat_prompt_template.format(name='朱鹏', user_input='简述python发展历史')
 print(f'chat_prompt: {chat_prompt}')
