@@ -19,7 +19,7 @@ from typing_extensions import TypedDict
 # 语法：app = graph.compile(cache=InMemoryCache())
 # 2.1 RedisCache()               — Redis 缓存，需要安装 redis 模块
 # 2.2 InMemoryCache()            — 内存缓存，默认，无过期时间
-# 2.3SqliteCache()              — SQLite 缓存，需要安装 sqlite3 模块
+# 2.3 SqliteCache()              — SQLite 缓存，需要安装 sqlite3 模块
 
 
 # 1.定义状态
