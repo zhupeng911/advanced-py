@@ -56,6 +56,8 @@ def create_graph():
 if __name__ == "__main__":
     print("内存持久化...")
     # 编译图:使用内存存储
+    # 1.使用 checkpointer，必须通过带有 thread_id 的配置 RunnableConfig 来运行图
+    # 2.因为 LangGraph 的底层数据库需要知道应该把状态写到哪一个“抽屉”或“记录”里。这个标识就是 thread_id。
     graph = create_graph()
     app = graph.compile(checkpointer=InMemorySaver())
 
